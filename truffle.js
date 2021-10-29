@@ -1,6 +1,6 @@
 var HDWalletProvider = require("truffle-hdwallet-provider");
 
-var mnemonic = "mnemonic"
+var mnemonic = "risk produce engine hole pole clinic curious flock high ketchup liberty inflict";
 
 /*module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
@@ -42,9 +42,9 @@ module.exports = {
 			  network_id: "*" // Match any network id
 		 },		
         kovan: {
-            provider: new PrivateKeyProvider("Private Key", "Infura Link"),
+            provider: new PrivateKeyProvider("c671fbebbac110e4b0f7f25776b3585143b7a981cb16075cf2054c1a0bdfbe64", "https://kovan.infura.io/v3/fe41724da6f24b76a782f376b2698ee8"),
             network_id: 42,
-            from: "Public Key",
+            from: "0xAD3DF0f1c421002B8Eff81288146AF9bC692d13d",
             gas: 8000000
         },
     },
