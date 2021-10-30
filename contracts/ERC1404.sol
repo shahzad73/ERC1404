@@ -103,6 +103,36 @@ contract ERC1404 is IERC1404, ERC20, Ownable {
 		return true;
     }
 	
+	
+	
+    function mint (address to, uint256 amount)		
+        public        
+		onlyOwner
+        returns (bool)
+    {
+		 super._mint(to, amount);
+		 return true;
+    }
+	
+
+    function burn (address to, uint256 amount)
+		public     
+		onlyOwner   
+        returns (bool)
+    {
+		 super._burn(to, amount);
+		 return true;
+    }
+
+
+    function approve( address owner, address spender, uint256 amount) 
+	public
+	returns (bool) 
+	{
+		 super._approve(owner, spender, amount);
+		 return true;
+    }
+
 
 }
  
