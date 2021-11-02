@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IERC1404.sol";
 
 
-contract ERC1404 is IERC1404, ERC20, Ownable {
+contract ERC1404Token is IERC1404, ERC20, Ownable {
 
     mapping (address => bool) internal whitelisted;  
 	
