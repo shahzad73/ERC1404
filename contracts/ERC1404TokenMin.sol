@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+// This contract is minimum implementation of ERC1404 protocol without any libraries 
 pragma solidity ^0.8.0;
 
 
@@ -20,7 +21,7 @@ contract ERC1404TokenMin {
     string public symbol;
 	
 	string private AddressZeroMessage = "Address Zero not allowed";
-	
+	string private AmountExceedBalance = "Amount Exceed Balance";	
 
 	constructor(uint256 _initialSupply, string memory _name,  string memory _symbol ) {
 		name = _name;
@@ -122,19 +123,11 @@ contract ERC1404TokenMin {
 
 
     function balanceOf(address account) 
-	public 
-	view returns (uint256) {
+    public 
+    view 
+    returns (uint256) {
         return _balances[account];
     }
-	
-	
-    function allowance(address owner, address spender) 
-	public 
-	view 
-	returns (uint256) {
-        return _allowances[owner][spender];
-    }	
-
 	
 
     function transfer(
@@ -144,12 +137,10 @@ contract ERC1404TokenMin {
 	public 
 	notRestricted (msg.sender, recipient, amount)
 	{
-        require(msg.sender != address(0), AddressZeroMessage);
         require(recipient != address(0), AddressZeroMessage);
-
-        uint256 senderBalance = _balances[msg.sender];
-        require(senderBalance >= amount, "Transfer amount exceeds");
-        _balances[msg.sender] = senderBalance.sub(amount);
+        require(_balances[msg.sender] >= amount, AmountExceedBalance);
+		
+        _balances[msg.sender] = _balances[msg.sender].sub(amount);
         _balances[recipient] = _balances[recipient].add(amount);
 
         emit Transfer(msg.sender, recipient, amount);
@@ -158,41 +149,42 @@ contract ERC1404TokenMin {
 
 
     function approve(
-        address owner,
         address spender,
         uint256 amount
-    ) internal virtual {
-        require(owner != address(0), AddressZeroMessage);
+    ) public {
         require(spender != address(0), AddressZeroMessage);
 
-        _allowances[owner][spender] = amount;
-        emit Approval(owner, spender, amount);
+        _allowances[msg.sender][spender] = amount;
+        emit Approval(msg.sender, spender, amount);
     }
-	
+
+
+    function allowance(address owner, address spender) 
+	public 
+	view 
+	returns (uint256) {
+        return _allowances[owner][spender];
+    }	
 
 
     function transferFrom(
         address owner,
-        address buyer,
+        address recipient,
         uint256 amount
     ) 
 	public 
-	notRestricted (owner, buyer, amount)
-	{
-        require(owner != address(0), AddressZeroMessage);
-        require(buyer != address(0), AddressZeroMessage);
-        require(msg.sender != address(0), AddressZeroMessage);
-		
-        require(amount <= _balances[owner]);
-        require(amount <= _allowances[owner][msg.sender]);
+	notRestricted (owner, recipient, amount)
+	{	
+        require(_balances[owner] >= amount, AmountExceedBalance);
+        require(_allowances[owner][msg.sender] >= amount, AmountExceedBalance );
 
         _balances[owner] = _balances[owner].sub(amount);
         _allowances[owner][msg.sender] = _allowances[owner][msg.sender].sub(amount);
-        _balances[buyer] = _balances[buyer].add(amount);
+        _balances[recipient] = _balances[recipient].add(amount);
 		
         emit Transfer(owner, buyer, amount);	
     }
- 
+
 
 
 
@@ -209,22 +201,21 @@ contract ERC1404TokenMin {
     }
 
 
-    function _burn(address account, uint256 amount) 
-	onlyOwner 
+    function burn(address account, uint256 amount) 
+	onlyOwner
 	public {
         require(account != address(0), AddressZeroMessage);
-
-        uint256 accountBalance = _balances[account];
-        require(accountBalance >= amount, "Amount exceeds balance");
-        _balances[account] = accountBalance.sub(amount);
+        require(_balances[account] >= amount, AmountExceedBalance);
+		
+        _balances[account] = _balances[account].sub(amount);
         totalSupply.sub(amount);
 
         emit Transfer(account, address(0), amount);
     }
 
-
 }
  
+
 
 library SafeMathInternal {
     function sub(uint256 a, uint256 b) internal pure returns (uint256) {

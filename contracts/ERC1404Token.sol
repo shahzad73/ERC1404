@@ -105,22 +105,22 @@ contract ERC1404Token is IERC1404, ERC20, Ownable {
 	
 	
 	
-    function mint (address to, uint256 amount)		
+    function mint (address from, uint256 amount)		
         public        
 		onlyOwner
         returns (bool)
     {
-		 super._mint(to, amount);
+		 super._mint(from, amount);
 		 return true;
     }
 	
 
-    function burn (address to, uint256 amount)
+    function burn (address from, uint256 amount)
 		public     
 		onlyOwner   
         returns (bool)
     {
-		 super._burn(to, amount);
+		 super._burn(from, amount);
 		 return true;
     }
 
