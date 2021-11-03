@@ -119,7 +119,10 @@ contract ERC1404TokenMin {
 
 
 
-    function balanceOf(address account) public view returns (uint256) {
+    function balanceOf(address account) 
+    public 
+    view 
+    returns (uint256) {
         return _balances[account];
     }
 	
@@ -133,7 +136,6 @@ contract ERC1404TokenMin {
 
 	
 	
-	
 
     function transfer(
         address recipient,
@@ -142,12 +144,10 @@ contract ERC1404TokenMin {
 	public 
 	notRestricted (msg.sender, recipient, amount)
 	{
-        require(msg.sender != address(0), "Zero Address");
         require(recipient != address(0), "Zero Address");
 
-        uint256 senderBalance = _balances[msg.sender];
-        require(senderBalance >= amount, "Transfer amount exceeds");
-        _balances[msg.sender] = senderBalance.sub(amount);
+        require(_balances[msg.sender] >= amount, "Transfer amount exceeds");
+        _balances[msg.sender] = _balances[msg.sender].sub(amount);
         _balances[recipient] = _balances[recipient].add(amount);
 
         emit Transfer(msg.sender, recipient, amount);
@@ -156,15 +156,13 @@ contract ERC1404TokenMin {
 
 
     function approve(
-        address owner,
         address spender,
         uint256 amount
-    ) internal virtual {
-        require(owner != address(0), "Zero Address");
+    ) public {
         require(spender != address(0), "Zero Address");
 
-        _allowances[owner][spender] = amount;
-        emit Approval(owner, spender, amount);
+        _allowances[msg.sender][spender] = amount;
+        emit Approval(msg.sender, spender, amount);
     }
 	
 
@@ -178,7 +176,6 @@ contract ERC1404TokenMin {
 	{
         require(owner != address(0), "Zero Address");
         require(buyer != address(0), "Zero Address");
-        require(msg.sender != address(0), "Zero Address");
 		
         require(amount <= _balances[owner]);
         require(amount <= _allowances[owner][msg.sender]);
