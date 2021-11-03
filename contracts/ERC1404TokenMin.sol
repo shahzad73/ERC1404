@@ -6,49 +6,52 @@ contract ERC1404TokenMin {
 
     using SafeMathInternal for uint256;
 
-    mapping (address => bool) internal whitelisted;  
-
+    mapping (address => bool) private _whitelisted;  
 	mapping(address => uint256) private _balances;
-
     mapping(address => mapping(address => uint256)) private _allowances;
-	
 	address private _owner;
 
     event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
     event Transfer(address indexed from, address indexed to, uint tokens);
 
-	
 	uint8 public decimals = 18;
     uint256 public totalSupply;
     string public name;
     string public symbol;
 	
+	string private AddressZeroMessage = "Address Zero not allowed";
+	
+
 	constructor(uint256 _initialSupply, string memory _name,  string memory _symbol ) {
 		name = _name;
         symbol = _symbol;
 
-		whitelisted[msg.sender] = true;
+		_whitelisted[msg.sender] = true;
 		_owner = msg.sender;
 
 		// Minting tokens for initial supply
-         totalSupply = _initialSupply;
+        totalSupply = _initialSupply;
         _balances[msg.sender] = totalSupply;
 		
 		emit Transfer(address(0), msg.sender, totalSupply);
 	}
 
 
-    function getOwner() public view virtual returns (address) {
+
+    function getOwner() 
+	public 
+	view 
+	returns (address) {
         return _owner;
     }
     modifier onlyOwner() {
-        require(_owner == msg.sender, "caller is not the owner");
+        require(_owner == msg.sender, "Not Owner");
         _;
     }
     function transferOwnership(address newOwner) 
 	public 
 	onlyOwner {
-        require(newOwner != address(0), "Address 0");
+        require(newOwner != address(0), AddressZeroMessage);
 		_owner = newOwner;
     }
 
@@ -57,25 +60,27 @@ contract ERC1404TokenMin {
 	  function addWhitelistAddress (address user) 
 	  public 
 	  onlyOwner 
-	   returns (bool){ 
-		  whitelisted[user] = true; 
-		  return true;
+	  { 
+		  _whitelisted[user] = true; 
 	  }
 	  
 	  function removeWhitelistAddress (address user) 
 	  public 
 	  onlyOwner
-	  returns (bool){ 
-		  delete whitelisted[user];
-		  return true;
+	  { 
+		  delete _whitelisted[user];
 	  }
 	  
 	  function isInvestorWhiteListed(address user) 
 	  public 
 	  view
 	  returns (bool) {
-		   return whitelisted[user]; 
+		   return _whitelisted[user]; 
 	  }
+	  
+	  
+	  
+	  
 	  
 
     modifier notRestricted (address from, address to, uint256 value) {
@@ -84,22 +89,20 @@ contract ERC1404TokenMin {
         _;
     }
 
-
     function detectTransferRestriction (address _from, address _to, uint256 value) 
 	public 
 	view 
 	returns (uint8)
     {
-		  if (whitelisted[_to])
+		  if (_whitelisted[_to])
 		  {
-			 if (whitelisted[_from]) 
+			 if (_whitelisted[_from]) 
 				return 1;
 			 else
 				return 0;
 		  } else
 			  return 0;
     }
-
 
     function messageForTransferRestriction (uint8 restrictionCode)
     public	
@@ -118,7 +121,9 @@ contract ERC1404TokenMin {
 
 
 
-    function balanceOf(address account) public view returns (uint256) {
+    function balanceOf(address account) 
+	public 
+	view returns (uint256) {
         return _balances[account];
     }
 	
@@ -131,8 +136,6 @@ contract ERC1404TokenMin {
     }	
 
 	
-	
-	
 
     function transfer(
         address recipient,
@@ -141,8 +144,8 @@ contract ERC1404TokenMin {
 	public 
 	notRestricted (msg.sender, recipient, amount)
 	{
-        require(msg.sender != address(0), "Zero Address");
-        require(recipient != address(0), "Zero Address");
+        require(msg.sender != address(0), AddressZeroMessage);
+        require(recipient != address(0), AddressZeroMessage);
 
         uint256 senderBalance = _balances[msg.sender];
         require(senderBalance >= amount, "Transfer amount exceeds");
@@ -159,13 +162,14 @@ contract ERC1404TokenMin {
         address spender,
         uint256 amount
     ) internal virtual {
-        require(owner != address(0), "Zero Address");
-        require(spender != address(0), "Zero Address");
+        require(owner != address(0), AddressZeroMessage);
+        require(spender != address(0), AddressZeroMessage);
 
         _allowances[owner][spender] = amount;
         emit Approval(owner, spender, amount);
     }
 	
+
 
     function transferFrom(
         address owner,
@@ -175,9 +179,9 @@ contract ERC1404TokenMin {
 	public 
 	notRestricted (owner, buyer, amount)
 	{
-        require(owner != address(0), "Zero Address");
-        require(buyer != address(0), "Zero Address");
-        require(msg.sender != address(0), "Zero Address");
+        require(owner != address(0), AddressZeroMessage);
+        require(buyer != address(0), AddressZeroMessage);
+        require(msg.sender != address(0), AddressZeroMessage);
 		
         require(amount <= _balances[owner]);
         require(amount <= _allowances[owner][msg.sender]);
@@ -197,7 +201,7 @@ contract ERC1404TokenMin {
     function mint(address account, uint256 amount) 
 	onlyOwner 
 	public {
-        require(account != address(0), "Zero Address");
+        require(account != address(0), AddressZeroMessage);
 
         totalSupply.add(amount);
         _balances[account].add(amount);
@@ -208,7 +212,7 @@ contract ERC1404TokenMin {
     function _burn(address account, uint256 amount) 
 	onlyOwner 
 	public {
-        require(account != address(0), "Zero Address");
+        require(account != address(0), AddressZeroMessage);
 
         uint256 accountBalance = _balances[account];
         require(accountBalance >= amount, "Amount exceeds balance");
@@ -221,7 +225,7 @@ contract ERC1404TokenMin {
 
 }
  
- 
+
 library SafeMathInternal {
     function sub(uint256 a, uint256 b) internal pure returns (uint256) {
       assert(b <= a);
@@ -234,3 +238,5 @@ library SafeMathInternal {
       return c;
     }
 } 
+
+
