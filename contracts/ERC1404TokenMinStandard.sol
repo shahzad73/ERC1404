@@ -2,13 +2,10 @@
 // This contract is minimum implementation of ERC1404 protocol without any libraries 
 pragma solidity ^0.8.0;
 
-import "./IERC1404.sol";
-import "./SafeMathMin.sol";
 
+contract ERC1404TokenMin {
 
-contract ERC1404TokenMin is IERC1404 {
-
-    using SafeMathMin for uint256;
+    using SafeMathInternal for uint256;
 
     mapping (address => bool) private _whitelisted;  
 	mapping(address => uint256) private _balances;
@@ -18,39 +15,28 @@ contract ERC1404TokenMin is IERC1404 {
     event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
     event Transfer(address indexed from, address indexed to, uint tokens);
 
-	uint256 public constant decimals = 18;
+	uint8 public decimals = 18;
     uint256 public totalSupply;
     string public name;
     string public symbol;
-	uint256 public currentTotalInvestors = 0;
-	uint256 public allowedInvestors = 0;
 	
-	string private constant AddressZeroMessage = "Address Zero Error";
-	string private constant AmountExceedBalance = "Amount Exceed Balance";	
+	string private AddressZeroMessage = "Address Zero not allowed";
+	string private AmountExceedBalance = "Amount Exceed Balance";	
 
-	constructor(uint256 _initialSupply, string memory _name,  string memory _symbol, uint256 _allowedInvestors ) {
+	constructor(uint256 _initialSupply, string memory _name,  string memory _symbol ) {
 		name = _name;
         symbol = _symbol;
 
 		_whitelisted[msg.sender] = true;
 		_owner = msg.sender;
 
-		allowedInvestors = _allowedInvestors;
-
 		// Minting tokens for initial supply
         totalSupply = _initialSupply;
         _balances[msg.sender] = totalSupply;
-				
+		
 		emit Transfer(address(0), msg.sender, totalSupply);
 	}
 
-
-
-    function resetAllowedInvestors(uint256 _allowedInvestors) 
-	public 
-	onlyOwner {
-		 allowedInvestors = _allowedInvestors;
-    }
 
 
     function getOwner() 
@@ -105,36 +91,21 @@ contract ERC1404TokenMin is IERC1404 {
     }
 
     function detectTransferRestriction (address _from, address _to, uint256 value) 
-	override
 	public 
 	view 
 	returns (uint8)
     {
 		  if (_whitelisted[_to])
 		  {
-			 if (_whitelisted[_from]) {
-
-						if(allowedInvestors == 0)
-							return 1;
-						else {
-							if( _balances[_to] > 0 ) 
-								return 1;
-							else {
-								if(  currentTotalInvestors < allowedInvestors  )
-									return 1;
-								else
-									return 0;
-							}
-						}
-
-			} else
+			 if (_whitelisted[_from]) 
+				return 1;
+			 else
 				return 0;
 		  } else
 			  return 0;
     }
 
     function messageForTransferRestriction (uint8 restrictionCode)
-	override
     public	
     pure returns (string memory message)
     {
@@ -168,9 +139,10 @@ contract ERC1404TokenMin is IERC1404 {
 	{
         require(recipient != address(0), AddressZeroMessage);
         require(_balances[msg.sender] >= amount, AmountExceedBalance);
-				
-		transferSharesBetweenInvestors ( msg.sender, recipient, amount );
 		
+        _balances[msg.sender] = _balances[msg.sender].sub(amount);
+        _balances[recipient] = _balances[recipient].add(amount);
+
         emit Transfer(msg.sender, recipient, amount);
     }
 
@@ -181,7 +153,6 @@ contract ERC1404TokenMin is IERC1404 {
         uint256 amount
     ) public {
         require(spender != address(0), AddressZeroMessage);
-		assert(amount > 0);
 
         _allowances[msg.sender][spender] = amount;
         emit Approval(msg.sender, spender, amount);
@@ -207,29 +178,15 @@ contract ERC1404TokenMin is IERC1404 {
         require(_balances[owner] >= amount, AmountExceedBalance);
         require(_allowances[owner][msg.sender] >= amount, AmountExceedBalance );
 
-		transferSharesBetweenInvestors ( owner, recipient, amount );
+        _balances[owner] = _balances[owner].sub(amount);
         _allowances[owner][msg.sender] = _allowances[owner][msg.sender].sub(amount);
+        _balances[recipient] = _balances[recipient].add(amount);
 		
         emit Transfer(owner, recipient, amount);	
     }
 
 
 
-	function transferSharesBetweenInvestors(
-        address sender,
-        address recipient,
-        uint256 amount	
-	)
-	internal
-	{
-			_balances[sender] = _balances[sender].sub(amount);
-			if( _balances[sender] == 0 )
-				currentTotalInvestors = currentTotalInvestors - 1;		
-
-			if( _balances[recipient] == 0 )
-				currentTotalInvestors = currentTotalInvestors + 1;
-			_balances[recipient] = _balances[recipient].add(amount);
-	}
 
 
 
@@ -238,8 +195,8 @@ contract ERC1404TokenMin is IERC1404 {
 	public {
         require(account != address(0), AddressZeroMessage);
 
-        totalSupply = totalSupply.add(amount);
-        _balances[account] = _balances[account].add(amount);
+        totalSupply.add(amount);
+        _balances[account].add(amount);
         emit Transfer(address(0), account, amount);
     }
 
@@ -249,9 +206,9 @@ contract ERC1404TokenMin is IERC1404 {
 	public {
         require(account != address(0), AddressZeroMessage);
         require(_balances[account] >= amount, AmountExceedBalance);
-
-        totalSupply = totalSupply.sub(amount);
+		
         _balances[account] = _balances[account].sub(amount);
+        totalSupply.sub(amount);
 
         emit Transfer(account, address(0), amount);
     }
@@ -260,4 +217,16 @@ contract ERC1404TokenMin is IERC1404 {
  
 
 
+library SafeMathInternal {
+    function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+      assert(b <= a);
+      return a - b;
+    }
+
+    function add(uint256 a, uint256 b) internal pure returns (uint256) {
+      uint256 c = a + b;
+      assert(c >= a);
+      return c;
+    }
+} 
 
