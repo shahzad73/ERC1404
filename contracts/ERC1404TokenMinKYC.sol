@@ -5,13 +5,13 @@ pragma solidity ^0.8.0;
 import "./IERC1404.sol";
 import "./SafeMathMin.sol";
 
-
 contract ERC1404TokenMin is IERC1404 {
 
     using SafeMathMin for uint256;
 	
-    mapping (address => bool) private _whitelisted;    		// List of whitelisted investors 
-	mapping(address => uint256) private _balances;
+    mapping (address => uint256) private _buyRestriction;  
+	mapping (address => uint256) private _sellRestriction;	
+	mapping (address => uint256) private _balances;
     mapping(address => mapping(address => uint256)) private _allowances;
 	address private _owner;
 
@@ -33,12 +33,14 @@ contract ERC1404TokenMin is IERC1404 {
 	
 	string private constant AddressZeroMessage = "Address Zero Error";
 	string private constant AmountExceedBalance = "Amount Exceed Balance";	
+	string private constant NotWhitelisted = "Not Whitelisted";
 
 	constructor(uint256 _initialSupply, string memory _name,  string memory _symbol, uint256 _allowedInvestors ) {
 		name = _name;
         symbol = _symbol;
 
-		_whitelisted[msg.sender] = true;
+		_buyRestriction[msg.sender] = 4000000000;
+		_sellRestriction[msg.sender] = 4000000000;
 		_owner = msg.sender;
 
 		allowedInvestors = _allowedInvestors;
@@ -82,39 +84,31 @@ contract ERC1404TokenMin is IERC1404 {
 		_owner = newOwner;
     }
 
+  
 
-
-	  function addWhitelistAddress (address user) 
+	  function modifyKYCData (address user, uint256 buyRestriction, uint256 sellRestriction) 
 	  public 
 	  onlyOwner 
 	  { 
-		  _whitelisted[user] = true; 
+		   _buyRestriction[user] = buyRestriction;
+		   _sellRestriction[user] = sellRestriction;
 	  }
-	  
-	  function removeWhitelistAddress (address user) 
-	  public 
-	  onlyOwner
-	  { 
-		  delete _whitelisted[user];
-	  }
-	  
-	  function isInvestorWhiteListed(address user) 
+	  	  
+	  function getKYCData(address user) 
 	  public 
 	  view
-	  returns (bool) {
-		   return _whitelisted[user]; 
+	  returns (uint256, uint256 ) {
+		   return (_buyRestriction[user] , _sellRestriction[user] );
 	  }
-	  
-	  
-	  
-	  
-	  
+
+
 
     modifier notRestricted (address from, address to, uint256 value) {
         uint8 restrictionCode = detectTransferRestriction(from, to, value);
         require(restrictionCode == 1, messageForTransferRestriction(restrictionCode));
         _;
     }
+
 
 
 	// These are ERC1404 interface implementations 
@@ -125,31 +119,23 @@ contract ERC1404TokenMin is IERC1404 {
 	returns (uint8)
     {
 	      // check if trading is allowed 
-		  require(isTradingAllowed == 1, "Transfer not allowed"); 
-			
-		 // Following 2 statements make sure both sender and receiver is whitelisted 
-		  if (_whitelisted[_to]) {
-			 	if (_whitelisted[_from]) {
-						
-						// Following conditions make sure if number of token holders are within limit if enabled 
-						if(allowedInvestors == 0)
-							return 1;
-						else {
-							if( _balances[_to] > 0 ) 
-								return 1;
-							else {
-								if(  currentTotalInvestors < allowedInvestors  )
-									return 1;
-								else
-									return 0;
-							}
-						}
-						
+		  require(isTradingAllowed == 1, "Transfer not allowed"); 		  			  
+		  require( _sellRestriction[_from] > block.timestamp, NotWhitelisted  );
+		  require( _buyRestriction[_to] > block.timestamp, NotWhitelisted  );
 
-		  		} else
-					return 0;
-		  } else
-			  return 0;
+			// Following conditions make sure if number of token holders are within limit if enabled 
+			if(allowedInvestors == 0)
+				return 1;
+			else {
+				if( _balances[_to] > 0 ) 
+					return 1;
+				else {
+					if(  currentTotalInvestors < allowedInvestors  )
+						return 1;
+					else
+						return 0;
+				}
+			}
     }
 
     function messageForTransferRestriction (uint8 restrictionCode)
@@ -160,12 +146,8 @@ contract ERC1404TokenMin is IERC1404 {
         if (restrictionCode == 1) 
             message = "Whitelisted";
          else 
-            message = "Not Whitelisted";
+            message = NotWhitelisted;
     }
-
-
-
-
 
 
 
