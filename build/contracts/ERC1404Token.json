@@ -12093,25 +12093,25 @@
     "absolutePath": "/home/shahzad/Shahzad/projects/git/ERC1404/contracts/ERC1404Token.sol",
     "exportedSymbols": {
       "Context": [
-        4584
+        4660
       ],
       "ERC1404Token": [
         294
       ],
       "ERC20": [
-        4459
+        4535
       ],
       "IERC1404": [
-        3730
+        3806
       ],
       "IERC20": [
-        4537
+        4613
       ],
       "IERC20Metadata": [
-        4562
+        4638
       ],
       "Ownable": [
-        3913
+        3989
       ]
     },
     "id": 295,
@@ -12135,7 +12135,7 @@
         "id": 2,
         "nodeType": "ImportDirective",
         "scope": 295,
-        "sourceUnit": 4460,
+        "sourceUnit": 4536,
         "src": "57:55:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -12146,7 +12146,7 @@
         "id": 3,
         "nodeType": "ImportDirective",
         "scope": 295,
-        "sourceUnit": 3914,
+        "sourceUnit": 3990,
         "src": "113:52:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -12157,7 +12157,7 @@
         "id": 4,
         "nodeType": "ImportDirective",
         "scope": 295,
-        "sourceUnit": 3731,
+        "sourceUnit": 3807,
         "src": "166:24:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -12170,7 +12170,7 @@
               "id": 5,
               "name": "IERC1404",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 3730,
+              "referencedDeclaration": 3806,
               "src": "218:8:0"
             },
             "id": 6,
@@ -12182,7 +12182,7 @@
               "id": 7,
               "name": "ERC20",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 4459,
+              "referencedDeclaration": 4535,
               "src": "228:5:0"
             },
             "id": 8,
@@ -12194,7 +12194,7 @@
               "id": 9,
               "name": "Ownable",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 3913,
+              "referencedDeclaration": 3989,
               "src": "235:7:0"
             },
             "id": 10,
@@ -12203,24 +12203,24 @@
           }
         ],
         "contractDependencies": [
-          3730,
-          3913,
-          4459,
-          4537,
-          4562,
-          4584
+          3806,
+          3989,
+          4535,
+          4613,
+          4638,
+          4660
         ],
         "contractKind": "contract",
         "fullyImplemented": true,
         "id": 294,
         "linearizedBaseContracts": [
           294,
-          3913,
-          4459,
-          4562,
-          4537,
-          4584,
-          3730
+          3989,
+          4535,
+          4638,
+          4613,
+          4660,
+          3806
         ],
         "name": "ERC1404Token",
         "nodeType": "ContractDefinition",
@@ -12403,7 +12403,7 @@
                       "name": "_mint",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 4319,
+                      "referencedDeclaration": 4395,
                       "src": "467:5:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_address_$_t_uint256_$returns$__$",
@@ -12553,7 +12553,7 @@
                   "id": 28,
                   "name": "ERC20",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 4459,
+                  "referencedDeclaration": 4535,
                   "src": "442:5:0"
                 },
                 "nodeType": "ModifierInvocation",
@@ -12773,7 +12773,7 @@
                   "id": 50,
                   "name": "onlyOwner",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 3856,
+                  "referencedDeclaration": 3932,
                   "src": "613:9:0"
                 },
                 "nodeType": "ModifierInvocation",
@@ -12953,7 +12953,7 @@
                   "id": 68,
                   "name": "onlyOwner",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 3856,
+                  "referencedDeclaration": 3932,
                   "src": "767:9:0"
                 },
                 "nodeType": "ModifierInvocation",
@@ -13533,7 +13533,7 @@
           },
           {
             "baseFunctions": [
-              3721
+              3797
             ],
             "body": {
               "id": 147,
@@ -13828,7 +13828,7 @@
           },
           {
             "baseFunctions": [
-              3729
+              3805
             ],
             "body": {
               "id": 174,
@@ -14126,7 +14126,7 @@
           },
           {
             "baseFunctions": [
-              4033
+              4109
             ],
             "body": {
               "id": 200,
@@ -14191,7 +14191,7 @@
                       "lValueRequested": false,
                       "memberName": "transfer",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 4033,
+                      "referencedDeclaration": 4109,
                       "src": "2061:14:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_address_$_t_uint256_$returns$_t_bool_$",
@@ -14420,7 +14420,7 @@
           },
           {
             "baseFunctions": [
-              4120
+              4196
             ],
             "body": {
               "id": 228,
@@ -14501,7 +14501,7 @@
                       "lValueRequested": false,
                       "memberName": "transferFrom",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 4120,
+                      "referencedDeclaration": 4196,
                       "src": "2273:18:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_address_$_t_address_$_t_uint256_$returns$_t_bool_$",
@@ -14805,7 +14805,7 @@
                       "lValueRequested": false,
                       "memberName": "_mint",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 4319,
+                      "referencedDeclaration": 4395,
                       "src": "2455:11:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_address_$_t_uint256_$returns$__$",
@@ -14866,7 +14866,7 @@
                   "id": 235,
                   "name": "onlyOwner",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 3856,
+                  "referencedDeclaration": 3932,
                   "src": "2413:9:0"
                 },
                 "nodeType": "ModifierInvocation",
@@ -15038,7 +15038,7 @@
                       "lValueRequested": false,
                       "memberName": "_burn",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 4391,
+                      "referencedDeclaration": 4467,
                       "src": "2617:11:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_address_$_t_uint256_$returns$__$",
@@ -15099,7 +15099,7 @@
                   "id": 256,
                   "name": "onlyOwner",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 3856,
+                  "referencedDeclaration": 3932,
                   "src": "2572:9:0"
                 },
                 "nodeType": "ModifierInvocation",
@@ -15287,7 +15287,7 @@
                       "lValueRequested": false,
                       "memberName": "_approve",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 4436,
+                      "referencedDeclaration": 4512,
                       "src": "2770:14:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_address_$_t_address_$_t_uint256_$returns$__$",
@@ -15481,25 +15481,25 @@
     "absolutePath": "/home/shahzad/Shahzad/projects/git/ERC1404/contracts/ERC1404Token.sol",
     "exportedSymbols": {
       "Context": [
-        4584
+        4660
       ],
       "ERC1404Token": [
         294
       ],
       "ERC20": [
-        4459
+        4535
       ],
       "IERC1404": [
-        3730
+        3806
       ],
       "IERC20": [
-        4537
+        4613
       ],
       "IERC20Metadata": [
-        4562
+        4638
       ],
       "Ownable": [
-        3913
+        3989
       ]
     },
     "id": 295,
@@ -15523,7 +15523,7 @@
         "id": 2,
         "nodeType": "ImportDirective",
         "scope": 295,
-        "sourceUnit": 4460,
+        "sourceUnit": 4536,
         "src": "57:55:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -15534,7 +15534,7 @@
         "id": 3,
         "nodeType": "ImportDirective",
         "scope": 295,
-        "sourceUnit": 3914,
+        "sourceUnit": 3990,
         "src": "113:52:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -15545,7 +15545,7 @@
         "id": 4,
         "nodeType": "ImportDirective",
         "scope": 295,
-        "sourceUnit": 3731,
+        "sourceUnit": 3807,
         "src": "166:24:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -15558,7 +15558,7 @@
               "id": 5,
               "name": "IERC1404",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 3730,
+              "referencedDeclaration": 3806,
               "src": "218:8:0"
             },
             "id": 6,
@@ -15570,7 +15570,7 @@
               "id": 7,
               "name": "ERC20",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 4459,
+              "referencedDeclaration": 4535,
               "src": "228:5:0"
             },
             "id": 8,
@@ -15582,7 +15582,7 @@
               "id": 9,
               "name": "Ownable",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 3913,
+              "referencedDeclaration": 3989,
               "src": "235:7:0"
             },
             "id": 10,
@@ -15591,24 +15591,24 @@
           }
         ],
         "contractDependencies": [
-          3730,
-          3913,
-          4459,
-          4537,
-          4562,
-          4584
+          3806,
+          3989,
+          4535,
+          4613,
+          4638,
+          4660
         ],
         "contractKind": "contract",
         "fullyImplemented": true,
         "id": 294,
         "linearizedBaseContracts": [
           294,
-          3913,
-          4459,
-          4562,
-          4537,
-          4584,
-          3730
+          3989,
+          4535,
+          4638,
+          4613,
+          4660,
+          3806
         ],
         "name": "ERC1404Token",
         "nodeType": "ContractDefinition",
@@ -15791,7 +15791,7 @@
                       "name": "_mint",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 4319,
+                      "referencedDeclaration": 4395,
                       "src": "467:5:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_address_$_t_uint256_$returns$__$",
@@ -15941,7 +15941,7 @@
                   "id": 28,
                   "name": "ERC20",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 4459,
+                  "referencedDeclaration": 4535,
                   "src": "442:5:0"
                 },
                 "nodeType": "ModifierInvocation",
@@ -16161,7 +16161,7 @@
                   "id": 50,
                   "name": "onlyOwner",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 3856,
+                  "referencedDeclaration": 3932,
                   "src": "613:9:0"
                 },
                 "nodeType": "ModifierInvocation",
@@ -16341,7 +16341,7 @@
                   "id": 68,
                   "name": "onlyOwner",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 3856,
+                  "referencedDeclaration": 3932,
                   "src": "767:9:0"
                 },
                 "nodeType": "ModifierInvocation",
@@ -16921,7 +16921,7 @@
           },
           {
             "baseFunctions": [
-              3721
+              3797
             ],
             "body": {
               "id": 147,
@@ -17216,7 +17216,7 @@
           },
           {
             "baseFunctions": [
-              3729
+              3805
             ],
             "body": {
               "id": 174,
@@ -17514,7 +17514,7 @@
           },
           {
             "baseFunctions": [
-              4033
+              4109
             ],
             "body": {
               "id": 200,
@@ -17579,7 +17579,7 @@
                       "lValueRequested": false,
                       "memberName": "transfer",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 4033,
+                      "referencedDeclaration": 4109,
                       "src": "2061:14:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_address_$_t_uint256_$returns$_t_bool_$",
@@ -17808,7 +17808,7 @@
           },
           {
             "baseFunctions": [
-              4120
+              4196
             ],
             "body": {
               "id": 228,
@@ -17889,7 +17889,7 @@
                       "lValueRequested": false,
                       "memberName": "transferFrom",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 4120,
+                      "referencedDeclaration": 4196,
                       "src": "2273:18:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_address_$_t_address_$_t_uint256_$returns$_t_bool_$",
@@ -18193,7 +18193,7 @@
                       "lValueRequested": false,
                       "memberName": "_mint",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 4319,
+                      "referencedDeclaration": 4395,
                       "src": "2455:11:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_address_$_t_uint256_$returns$__$",
@@ -18254,7 +18254,7 @@
                   "id": 235,
                   "name": "onlyOwner",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 3856,
+                  "referencedDeclaration": 3932,
                   "src": "2413:9:0"
                 },
                 "nodeType": "ModifierInvocation",
@@ -18426,7 +18426,7 @@
                       "lValueRequested": false,
                       "memberName": "_burn",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 4391,
+                      "referencedDeclaration": 4467,
                       "src": "2617:11:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_address_$_t_uint256_$returns$__$",
@@ -18487,7 +18487,7 @@
                   "id": 256,
                   "name": "onlyOwner",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 3856,
+                  "referencedDeclaration": 3932,
                   "src": "2572:9:0"
                 },
                 "nodeType": "ModifierInvocation",
@@ -18675,7 +18675,7 @@
                       "lValueRequested": false,
                       "memberName": "_approve",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 4436,
+                      "referencedDeclaration": 4512,
                       "src": "2770:14:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_address_$_t_address_$_t_uint256_$returns$__$",
@@ -18878,7 +18878,7 @@
     }
   },
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-11-08T07:59:37.686Z",
+  "updatedAt": "2021-11-12T12:36:59.905Z",
   "devdoc": {
     "kind": "dev",
     "methods": {
