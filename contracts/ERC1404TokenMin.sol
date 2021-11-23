@@ -126,6 +126,7 @@ contract ERC1404TokenMin is IERC1404 {
     {
 	      // check if trading is allowed 
 		  require(isTradingAllowed == 1, "Transfer not allowed"); 
+		  require( value != 0, "Value cannot be 0");		  
 			
 		 // Following 2 statements make sure both sender and receiver is whitelisted 
 		  if (_whitelisted[_to]) {

@@ -55,6 +55,8 @@ contract ERC1404Token is IERC1404, ERC20, Ownable {
 	view 
 	returns (uint8)
     {
+		  require( value != 0, "Value cannot be 0");
+			  
 		  if (whitelisted[_to])
 		  {
 			 if (whitelisted[_from]) 

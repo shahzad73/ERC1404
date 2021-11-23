@@ -3,7 +3,7 @@
 pragma solidity ^0.8.0;
 
 
-contract ERC1404TokenMin {
+contract ERC1404TokenMinStandard {
 
     using SafeMathInternal for uint256;
 
@@ -95,6 +95,8 @@ contract ERC1404TokenMin {
 	view 
 	returns (uint8)
     {
+		  require( value != 0, "Value cannot be 0");
+	
 		  if (_whitelisted[_to])
 		  {
 			 if (_whitelisted[_from]) 

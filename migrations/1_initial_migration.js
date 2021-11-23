@@ -16,6 +16,6 @@ module.exports = function (deployer) {
 	
 		
 	 var _name = "EK14"
-	 deployer.deploy(ERC1404TokenMinKYC, _initialSupply, _name, _name, 5, 18);
-	
+	 deployer.deploy(ERC1404TokenMinKYC, _initialSupply, _name, _name, 5, 18, "ShareCertificate", "CompanyHomepage", "CompanyLegalDocs");
+
 };
