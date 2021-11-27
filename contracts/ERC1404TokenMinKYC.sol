@@ -122,7 +122,7 @@ contract ERC1404TokenMinKYC is IERC20Token, IERC1404 {
 		 isTradingAllowed = _isTradingAllowed;
     }
 
- 
+
 	//-----------------------------------------------------------------------
 	// Get or set current owner of this smart contract
     function owner() 
