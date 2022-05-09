@@ -26,12 +26,15 @@ contract ERC1404TokenMinKYC is IERC20Token, IERC1404 {
     mapping (address => bool) private _whitelistControlAuthority;  	
 	
 
-    //event Approval(address indexed tokenOwner, address indexed spender, uint256 tokens);
-    //event Transfer(address indexed from, address indexed to, uint256 tokens);
+	// These events are defined in IERC20Token.sol
+    // event Approval(address indexed tokenOwner, address indexed spender, uint256 tokens);
+    // event Transfer(address indexed from, address indexed to, uint256 tokens);
 
 	
 	// ERC20 related functions
 	uint256 public decimals = 18;
+	string public IssuancePlatform = "DigiShares";
+	string public issuanceProtocol = "ERC-1404";
     uint256 private _totalSupply;
     string public name;
     string public symbol;
@@ -41,7 +44,7 @@ contract ERC1404TokenMinKYC is IERC20Token, IERC1404 {
 	string public CompanyHomepage;
 	string public CompanyLegalDocs;
 
-	
+
 	// These variables control how many investors can have tokens
 	// if allowedInvestors = 0 then there is no limit of investors 
 	uint256 public currentTotalInvestors = 0;		
