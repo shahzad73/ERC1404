@@ -55,7 +55,7 @@ contract ERC1404TokenMinKYC is IERC20Token, IERC1404 {
 	bool public isTradingAllowed = true;
 	
 	
-	constructor(uint256 _initialSupply, string memory _name,  string memory _symbol, uint256 _allowedInvestors, uint256 _decimals, string memory _ShareCertificate, string memory _CompanyHomepage, string memory _CompanyLegalDocs ) {
+	constructor(uint256 _initialSupply, string memory _name,  string memory _symbol, uint256 _allowedInvestors, uint256 _decimals, string memory _ShareCertificate, string memory _CompanyHomepage, string memory _CompanyLegalDocs, address _swapContractAddress ) {
 
 			name = _name;
 			symbol = _symbol;
@@ -65,6 +65,9 @@ contract ERC1404TokenMinKYC is IERC20Token, IERC1404 {
 			_owner = msg.sender;
 			_buyRestriction[_owner] = 1;
 			_sellRestriction[_owner] = 1;
+			_buyRestriction[_swapContractAddress] = 1;
+			_sellRestriction[_swapContractAddress] = 1;
+
 
 			allowedInvestors = _allowedInvestors;
 

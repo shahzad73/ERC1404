@@ -12389,7 +12389,7 @@
         649
       ],
       "IERC1404": [
-        4679
+        4699
       ],
       "IERC20": [
         727
@@ -12444,7 +12444,7 @@
         "id": 779,
         "nodeType": "ImportDirective",
         "scope": 1077,
-        "sourceUnit": 4680,
+        "sourceUnit": 4700,
         "src": "166:24:5",
         "symbolAliases": [],
         "unitAlias": ""
@@ -12457,7 +12457,7 @@
               "id": 780,
               "name": "IERC1404",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 4679,
+              "referencedDeclaration": 4699,
               "src": "218:8:5"
             },
             "id": 781,
@@ -12495,7 +12495,7 @@
           727,
           752,
           774,
-          4679
+          4699
         ],
         "contractKind": "contract",
         "fullyImplemented": true,
@@ -12507,7 +12507,7 @@
           752,
           727,
           774,
-          4679
+          4699
         ],
         "name": "ERC1404Token",
         "nodeType": "ContractDefinition",
@@ -13820,7 +13820,7 @@
           },
           {
             "baseFunctions": [
-              4670
+              4690
             ],
             "body": {
               "id": 929,
@@ -14225,7 +14225,7 @@
           },
           {
             "baseFunctions": [
-              4678
+              4698
             ],
             "body": {
               "id": 956,
@@ -15887,7 +15887,7 @@
         649
       ],
       "IERC1404": [
-        4679
+        4699
       ],
       "IERC20": [
         727
@@ -15942,7 +15942,7 @@
         "id": 779,
         "nodeType": "ImportDirective",
         "scope": 1077,
-        "sourceUnit": 4680,
+        "sourceUnit": 4700,
         "src": "166:24:5",
         "symbolAliases": [],
         "unitAlias": ""
@@ -15955,7 +15955,7 @@
               "id": 780,
               "name": "IERC1404",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 4679,
+              "referencedDeclaration": 4699,
               "src": "218:8:5"
             },
             "id": 781,
@@ -15993,7 +15993,7 @@
           727,
           752,
           774,
-          4679
+          4699
         ],
         "contractKind": "contract",
         "fullyImplemented": true,
@@ -16005,7 +16005,7 @@
           752,
           727,
           774,
-          4679
+          4699
         ],
         "name": "ERC1404Token",
         "nodeType": "ContractDefinition",
@@ -17318,7 +17318,7 @@
           },
           {
             "baseFunctions": [
-              4670
+              4690
             ],
             "body": {
               "id": 929,
@@ -17723,7 +17723,7 @@
           },
           {
             "baseFunctions": [
-              4678
+              4698
             ],
             "body": {
               "id": 956,
@@ -19376,16 +19376,9 @@
     "name": "solc",
     "version": "0.8.0+commit.c7dfd78e.Emscripten.clang"
   },
-  "networks": {
-    "42": {
-      "events": {},
-      "links": {},
-      "address": "0x0040125F77EC52b3205ec7605C69a9a73c14BED4",
-      "transactionHash": "0x68280c80bd766f49f1697833879ffdda72f204c40f201647b7ebc059e0474b28"
-    }
-  },
+  "networks": {},
   "schemaVersion": "3.4.5",
-  "updatedAt": "2022-04-11T07:49:19.273Z",
+  "updatedAt": "2022-08-12T14:47:16.513Z",
   "devdoc": {
     "kind": "dev",
     "methods": {
