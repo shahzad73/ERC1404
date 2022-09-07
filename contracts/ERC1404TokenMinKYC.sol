@@ -33,6 +33,7 @@ contract ERC1404TokenMinKYC is IERC20Token, IERC1404 {
 	
 	// ERC20 related functions
 	uint256 public decimals = 18;
+	string public version = "1.1";
 	string public IssuancePlatform = "DigiShares";
 	string public issuanceProtocol = "ERC-1404";
     uint256 private _totalSupply;
@@ -178,15 +179,44 @@ contract ERC1404TokenMinKYC is IERC20Token, IERC1404 {
 	
 
   	// Set buy and sell restrictions on investors 
-	function modifyKYCData (address user, uint256 buyRestriction, uint256 sellRestriction) 
+	function modifyKYCData (
+		address user, 
+		uint256 buyRestriction, 
+		uint256 sellRestriction 
+	) 
 	external 
 	{ 
-	  	    require(_whitelistControlAuthority[msg.sender] == true, "Not Whitelist Authority");
-			
-		   _buyRestriction[user] = buyRestriction;
-		   _sellRestriction[user] = sellRestriction;
+	  	require(_whitelistControlAuthority[msg.sender] == true, "Not Whitelist Authority");
+		setupKYCDataForUser( user, buyRestriction, sellRestriction );
 	}
-	  	  
+
+	function bulkWhitelistWallets (
+		address[] memory user, 
+		uint256 buyRestriction, 
+		uint256 sellRestriction 
+	) 
+	external 
+	{ 
+		require(_whitelistControlAuthority[msg.sender] == true, "Not Whitelist Authority");
+		for (uint i=0; i<user.length; i++) {
+			setupKYCDataForUser( user[i], buyRestriction, sellRestriction );			
+		}		
+	}
+
+	function setupKYCDataForUser (
+		address user, 
+		uint256 buyRestriction, 
+		uint256 sellRestriction
+	)
+	internal
+	{
+		_buyRestriction[user] = buyRestriction;
+		_sellRestriction[user] = sellRestriction;
+	}
+
+
+
+
 	function getKYCData(address user) 
 	external 
 	view
