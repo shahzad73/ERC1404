@@ -1,6 +1,7 @@
 //const ERC1404 = artifacts.require("ERC1404Token");
 var ERC20 = artifacts.require("ERC20Token");
 //var ERC1404TokenMinKYC = artifacts.require("ERC1404TokenMinKYC");
+//var Swaper = artifacts.require("TokenSwapper")
 
 module.exports = function (deployer) {	
 	 var _tokenToMintAddress = "0xAD3DF0f1c421002B8Eff81288146AF9bC692d13d";
@@ -12,7 +13,8 @@ module.exports = function (deployer) {
 	
 	 _name = "USDC"
 	 deployer.deploy(ERC20, _tokenToMintAddress, _initialSupply, _name);	
-	
+
+	 //deployer.deploy(Swaper);	
 		
 	 //var _name = "EK14"
 	 //deployer.deploy(ERC1404TokenMinKYC, _initialSupply, _name, _name, 5, 18, "ShareCertificate", "CompanyHomepage", "CompanyLegalDocs");

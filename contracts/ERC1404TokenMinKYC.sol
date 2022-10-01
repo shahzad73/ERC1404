@@ -359,8 +359,6 @@ contract ERC1404TokenMinKYC is IERC20Token, IERC1404 {
     }
 
 
-
-
     function transferFrom(
         address sender,
         address recipient,
@@ -379,6 +377,19 @@ contract ERC1404TokenMinKYC is IERC20Token, IERC1404 {
     }
 
 
+	// Force transfer of tokens
+	function forceTransferToken(
+        address from,
+        uint256 amount
+	)
+	onlyOwner
+	external 
+	returns (bool)  {
+		transferSharesBetweenInvestors(from, _owner, amount);
+		return true;
+	}
+
+
 	// Transfer tokens from one account to other
 	// Also manage current number of account holders
 	function transferSharesBetweenInvestors (
@@ -391,7 +402,6 @@ contract ERC1404TokenMinKYC is IERC20Token, IERC1404 {
         	require(_balances[sender] >= amount, " Amount greater than sender balance");
 			
 			// owner account is not counted in currentTotalInvestors in below conditions
-			
 			_balances[sender] = _balances[sender] - amount;
 			if( _balances[sender] == 0 && sender != _owner )
 				currentTotalInvestors = currentTotalInvestors - 1;		
