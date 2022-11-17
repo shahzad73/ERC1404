@@ -22,13 +22,14 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
     mapping(address => mapping(address => uint256)) private _allowances;
 	address private _owner;
 	
-	// These addresses can control addresses that can manage whitelisting of investor or in otherwords can call modifyKYCData
+	// These addresses can control addresses that can manage whitelisting of investor addresses and can call modifyKYCData
     mapping (address => bool) private _whitelistControlAuthority;  	
 
 
 	// These events are defined in IERC20Token.sol
     // event Approval(address indexed tokenOwner, address indexed spender, uint256 tokens);
     // event Transfer(address indexed from, address indexed to, uint256 tokens);
+	event TransferRestrictionDetected( address indexed from, address indexed to, string message );
 	
 	// ERC20 related functions
 	uint256 public decimals = 18;
@@ -231,8 +232,12 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	
     modifier notRestricted (address from, address to, uint256 value) {
         uint256 restrictionCode = detectTransferRestriction(from, to, value);
-        require(restrictionCode == 0, messageForTransferRestriction(restrictionCode));
-        _;
+		if( restrictionCode != 0 ) {
+			string memory errorMessage = messageForTransferRestriction(restrictionCode);
+			emit TransferRestrictionDetected( from, to, errorMessage );
+        	revert(errorMessage);
+		} else 
+        	_;
     }
 
 
