@@ -231,7 +231,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	// These are ERC1404 interface implementations 
 	
     modifier notRestricted (address from, address to, uint256 value) {
-        uint256 restrictionCode = detectTransferRestriction(from, to, value);
+        uint8 restrictionCode = detectTransferRestriction(from, to, value);
 		if( restrictionCode != 0 ) {
 			string memory errorMessage = messageForTransferRestriction(restrictionCode);
 			emit TransferRestrictionDetected( from, to, errorMessage );
@@ -245,7 +245,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	override
 	public 
 	view 
-	returns (uint256 status)
+	returns (uint8 status)
     {	
 	      	// check if trading is allowed 
 		  	if(isTradingAllowed == false)
@@ -295,7 +295,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 			}
     }
 
-    function messageForTransferRestriction (uint256 restrictionCode)
+    function messageForTransferRestriction (uint8 restrictionCode)
 	override
     public	
     pure 
@@ -304,17 +304,17 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
         if (restrictionCode == 0) 
             message = "No transfer restrictions found";
         else if (restrictionCode == 1) 
-            message = "Max allowed investor restriction is in place, this token transfer will exceed this limitation";
+            message = "Max allowed investor restriction is in place, this transfer will exceed this limitation";
         else if (restrictionCode == 2) 
-            message = "Transfers are disabled by issuer";
+            message = "All transfers are disabled by issuer";
         else if (restrictionCode == 3) 
-            message = "Value bring transferred cannot be 0";
+            message = "Zero transfer amount not allowed";
         else if (restrictionCode == 4) 
             message = "Sender is not whitelisted or blocked";
         else if (restrictionCode == 5) 
             message = "Receiver is not whitelisted or blocked";
         else if (restrictionCode == 6) 
-            message = "Sender is whitelisted but is not eligible to send tokens and still under holding period (KYC time restriction)";
+            message = "Sender is whitelisted but is not eligible to send tokens and under holding period (KYC time restriction)";
         else if (restrictionCode == 7) 
             message = "Receiver is whitelisted but is not yet eligible to receive tokens in his wallet (KYC time restriction)";			
 		else
