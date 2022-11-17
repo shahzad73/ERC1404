@@ -7,7 +7,7 @@ pragma solidity ^0.8.0;
 import "./IERC20Token.sol";
 import "./IERC1404.sol";
 
-contract ERC1404TokenMinKYC is IERC20Token, IERC1404 {
+contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	
 	// Set buy and sell restrictions on investors.  
 	// date is Linux Epoch datetime
@@ -24,12 +24,11 @@ contract ERC1404TokenMinKYC is IERC20Token, IERC1404 {
 	
 	// These addresses can control addresses that can manage whitelisting of investor or in otherwords can call modifyKYCData
     mapping (address => bool) private _whitelistControlAuthority;  	
-	
+
 
 	// These events are defined in IERC20Token.sol
     // event Approval(address indexed tokenOwner, address indexed spender, uint256 tokens);
     // event Transfer(address indexed from, address indexed to, uint256 tokens);
-
 	
 	// ERC20 related functions
 	uint256 public decimals = 18;
@@ -56,7 +55,7 @@ contract ERC1404TokenMinKYC is IERC20Token, IERC1404 {
 	bool public isTradingAllowed = true;
 	
 	
-	constructor(uint256 _initialSupply, string memory _name,  string memory _symbol, uint256 _allowedInvestors, uint256 _decimals, string memory _ShareCertificate, string memory _CompanyHomepage, string memory _CompanyLegalDocs, address _swapContractAddress ) {
+	constructor(uint256 _initialSupply, string memory _name,  string memory _symbol, uint256 _allowedInvestors, uint256 _decimals, string memory _ShareCertificate, string memory _CompanyHomepage, string memory _CompanyLegalDocs, address _atomicSwapContractAddress ) {
 
 			name = _name;
 			symbol = _symbol;
@@ -66,8 +65,8 @@ contract ERC1404TokenMinKYC is IERC20Token, IERC1404 {
 			_owner = msg.sender;
 			_buyRestriction[_owner] = 1;
 			_sellRestriction[_owner] = 1;
-			_buyRestriction[_swapContractAddress] = 1;
-			_sellRestriction[_swapContractAddress] = 1;
+			_buyRestriction[_atomicSwapContractAddress] = 1;
+			_sellRestriction[_atomicSwapContractAddress] = 1;
 
 
 			allowedInvestors = _allowedInvestors;
@@ -118,7 +117,7 @@ contract ERC1404TokenMinKYC is IERC20Token, IERC1404 {
 		if( _allowedInvestors != 0 )
 			require(_allowedInvestors >= currentTotalInvestors, "Allowed Investors cannot be less than Current holders");
 
-		 allowedInvestors = _allowedInvestors;
+		allowedInvestors = _allowedInvestors;
     }
 
 
@@ -227,71 +226,94 @@ contract ERC1404TokenMinKYC is IERC20Token, IERC1404 {
 
 
 
-
-
 	//-----------------------------------------------------------------------
 	// These are ERC1404 interface implementations 
 	
     modifier notRestricted (address from, address to, uint256 value) {
-        uint8 restrictionCode = detectTransferRestriction(from, to, value);
-        require(restrictionCode == 1, messageForTransferRestriction(restrictionCode));
+        uint256 restrictionCode = detectTransferRestriction(from, to, value);
+        require(restrictionCode == 0, messageForTransferRestriction(restrictionCode));
         _;
     }
-	
+
+
     function detectTransferRestriction (address _from, address _to, uint256 value) 
 	override
 	public 
 	view 
-	returns (uint8 status)
+	returns (uint256 status)
     {	
-	      // check if trading is allowed 
-		  require(isTradingAllowed == true, "Transfer not allowed"); 	
+	      	// check if trading is allowed 
+		  	if(isTradingAllowed == false)
+			 	return 2;   
 
-		  require( value > 0, "Value bring transferred cannot be 0");
+		  	if( value <= 0)
+		  	  	return 3;   
 		  
-		  require( _sellRestriction[_from] != 0  && _buyRestriction[_to] != 0, "Not Whitelisted" );
-		  require( _sellRestriction[_from] <= block.timestamp && _buyRestriction[_to] <= block.timestamp, "KYC Time Restriction" );
-		  
-			// Following conditions make sure if number of token holders are within limit if enabled 
-			// allowedInvestors = 0 means no restriction on token holders
+		  	if( _sellRestriction[_from] == 0 )
+				return 4;   // Sender is not whitelisted or blocked
+
+		  	if( _buyRestriction[_to] == 0 )
+				return 5;	// Receiver is not whitelisted or blocked
+
+			if( _sellRestriction[_from] > block.timestamp )
+				return 6;	// Receiver is whitelisted but is not eligible to send tokens and still under holding period (KYC time restriction)
+
+			if( _buyRestriction[_to] > block.timestamp )
+				return 7;	// Receiver is whitelisted but is not yet eligible to receive tokens in his wallet (KYC time restriction)
+
+
+			// Following conditions make sure if number of token holders are within limit if enabled
+			// allowedInvestors = 0 means no restriction on number of token holders and is the default setting
 			if(allowedInvestors == 0)
-				return 1;
+				return 0;
 			else {
 				if( _balances[_to] > 0 || _to == _owner) 
-					// token can be transferred if the reciver is alreay holding tokens and already counted in currentTotalInvestors
-					// or receiver is the company account. Company account do not count in currentTotalInvestors
-					return 1;
+					// token can be transferred if the receiver alreay holding tokens and already counted in currentTotalInvestors
+					// or receiver is issuer account. issuer account do not count in currentTotalInvestors
+					return 0;
 				else {
 					if(  currentTotalInvestors < allowedInvestors  )
 						// currentTotalInvestors is within limits of allowedInvestors
-						return 1;
+						return 0;
 					else {
-						// In this section currentTotalInvestors = allowedInvestors and no more transaction are allowed,  
+						// In this section currentTotalInvestors = allowedInvestors and no more transfers to new investors are allowed
 						// except following conditions 
-						// if whole balance is being transferred from sender to another whitelisted investor with 0 balance  and sender is no owner
-						// in this situation any sender cannot send partial balance to new receiver as it will exceed allowedInvestors limt 
-						// sending the whole balance will exclude current holder from allowedInvestors and new receiver will be added in allowedInvestors 
-						// owner is excluded in this situation because if he send partial or full balance to new investor then it will exceed allowedInvestors
-						if( _balances[_from] == value && _balances[_to] == 0 && _from != _owner)    
-							return 1;
-						else
+						// 1. sender is sending his whole balance to anohter whitelisted investor regardless he has any balance or not
+						// 2. sender must not be owner/isser
+						//    owner sending his whole balance to investor will exceed allowedInvestors restriction if currentTotalInvestors = allowedInvestors
+						if( _balances[_from] == value && _from != _owner)    
 							return 0;
+						else
+							return 1;
 					}
 				}
 			}
-
     }
 
-    function messageForTransferRestriction (uint8 restrictionCode)
+    function messageForTransferRestriction (uint256 restrictionCode)
 	override
     public	
     pure 
 	returns (string memory message)
     {
-        if (restrictionCode == 1) 
-            message = "Whitelisted";
-         else 
-            message = "Not Whitelisted";
+        if (restrictionCode == 0) 
+            message = "No transfer restrictions found";
+        else if (restrictionCode == 1) 
+            message = "Max allowed investor restriction is in place, this token transfer will exceed this limitation";
+        else if (restrictionCode == 2) 
+            message = "Transfers are disabled by issuer";
+        else if (restrictionCode == 3) 
+            message = "Value bring transferred cannot be 0";
+        else if (restrictionCode == 4) 
+            message = "Sender is not whitelisted or blocked";
+        else if (restrictionCode == 5) 
+            message = "Receiver is not whitelisted or blocked";
+        else if (restrictionCode == 6) 
+            message = "Sender is whitelisted but is not eligible to send tokens and still under holding period (KYC time restriction)";
+        else if (restrictionCode == 7) 
+            message = "Receiver is whitelisted but is not yet eligible to receive tokens in his wallet (KYC time restriction)";			
+		else
+			message = "Error code is not yet defined";
     }
 	//-----------------------------------------------------------------------
 
