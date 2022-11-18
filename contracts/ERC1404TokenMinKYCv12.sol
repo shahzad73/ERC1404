@@ -54,7 +54,18 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	// Transfer Allowed = true
 	// Transfer not allowed = false
 	bool public isTradingAllowed = true;
-	
+
+
+	// Transfer Restriction Codes
+	uint8 public constant No_Transfer_Restrictions_Found = 0;
+	uint8 public constant Max_Allowed_Investors_Exceed = 1;
+	uint8 public constant Transfers_Disabled = 2;
+	uint8 public constant Transfer_Value_Cannot_Zero = 3;
+	uint8 public constant Sender_Not_Whitelisted_or_Blocked = 4;
+	uint8 public constant Receiver_Not_Whitelisted_or_Blocked = 5;
+	uint8 public constant Sender_Under_Holding_Period = 6;
+	uint8 public constant Receiver_Under_Holding_Period = 7;
+
 	
 	constructor(uint256 _initialSupply, string memory _name,  string memory _symbol, uint256 _allowedInvestors, uint256 _decimals, string memory _ShareCertificate, string memory _CompanyHomepage, string memory _CompanyLegalDocs, address _atomicSwapContractAddress ) {
 
@@ -86,7 +97,6 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 			emit Transfer(address(0), _owner, _totalSupply);
 
 	}
-
 
 
     function resetShareCertificate(string memory _ShareCertificate) 
@@ -241,6 +251,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
     }
 
 
+
     function detectTransferRestriction (address _from, address _to, uint256 value) 
 	override
 	public 
@@ -249,37 +260,37 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
     {	
 	      	// check if trading is allowed 
 		  	if(isTradingAllowed == false)
-			 	return 2;   
+			 	return Transfers_Disabled;   
 
 		  	if( value <= 0)
-		  	  	return 3;   
+		  	  	return Transfer_Value_Cannot_Zero;   
 		  
 		  	if( _sellRestriction[_from] == 0 )
-				return 4;   // Sender is not whitelisted or blocked
+				return Sender_Not_Whitelisted_or_Blocked;   // Sender is not whitelisted or blocked
 
 		  	if( _buyRestriction[_to] == 0 )
-				return 5;	// Receiver is not whitelisted or blocked
+				return Receiver_Not_Whitelisted_or_Blocked;	// Receiver is not whitelisted or blocked
 
 			if( _sellRestriction[_from] > block.timestamp )
-				return 6;	// Receiver is whitelisted but is not eligible to send tokens and still under holding period (KYC time restriction)
+				return Sender_Under_Holding_Period;	// Receiver is whitelisted but is not eligible to send tokens and still under holding period (KYC time restriction)
 
 			if( _buyRestriction[_to] > block.timestamp )
-				return 7;	// Receiver is whitelisted but is not yet eligible to receive tokens in his wallet (KYC time restriction)
+				return Receiver_Under_Holding_Period;	// Receiver is whitelisted but is not yet eligible to receive tokens in his wallet (KYC time restriction)
 
 
 			// Following conditions make sure if number of token holders are within limit if enabled
 			// allowedInvestors = 0 means no restriction on number of token holders and is the default setting
 			if(allowedInvestors == 0)
-				return 0;
+				return No_Transfer_Restrictions_Found;
 			else {
 				if( _balances[_to] > 0 || _to == _owner) 
 					// token can be transferred if the receiver alreay holding tokens and already counted in currentTotalInvestors
 					// or receiver is issuer account. issuer account do not count in currentTotalInvestors
-					return 0;
+					return No_Transfer_Restrictions_Found;
 				else {
 					if(  currentTotalInvestors < allowedInvestors  )
 						// currentTotalInvestors is within limits of allowedInvestors
-						return 0;
+						return No_Transfer_Restrictions_Found;
 					else {
 						// In this section currentTotalInvestors = allowedInvestors and no more transfers to new investors are allowed
 						// except following conditions 
@@ -287,13 +298,14 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 						// 2. sender must not be owner/isser
 						//    owner sending his whole balance to investor will exceed allowedInvestors restriction if currentTotalInvestors = allowedInvestors
 						if( _balances[_from] == value && _from != _owner)    
-							return 0;
+							return No_Transfer_Restrictions_Found;
 						else
-							return 1;
+							return Max_Allowed_Investors_Exceed;
 					}
 				}
 			}
     }
+
 
     function messageForTransferRestriction (uint8 restrictionCode)
 	override
@@ -301,24 +313,24 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
     pure 
 	returns (string memory message)
     {
-        if (restrictionCode == 0) 
+        if (restrictionCode == No_Transfer_Restrictions_Found) 
             message = "No transfer restrictions found";
-        else if (restrictionCode == 1) 
+        else if (restrictionCode == Max_Allowed_Investors_Exceed) 
             message = "Max allowed investor restriction is in place, this transfer will exceed this limitation";
-        else if (restrictionCode == 2) 
+        else if (restrictionCode == Transfers_Disabled) 
             message = "All transfers are disabled by issuer";
-        else if (restrictionCode == 3) 
+        else if (restrictionCode == Transfer_Value_Cannot_Zero) 
             message = "Zero transfer amount not allowed";
-        else if (restrictionCode == 4) 
+        else if (restrictionCode == Sender_Not_Whitelisted_or_Blocked) 
             message = "Sender is not whitelisted or blocked";
-        else if (restrictionCode == 5) 
+        else if (restrictionCode == Receiver_Not_Whitelisted_or_Blocked) 
             message = "Receiver is not whitelisted or blocked";
-        else if (restrictionCode == 6) 
+        else if (restrictionCode == Sender_Under_Holding_Period) 
             message = "Sender is whitelisted but is not eligible to send tokens and under holding period (KYC time restriction)";
-        else if (restrictionCode == 7) 
+        else if (restrictionCode == Receiver_Under_Holding_Period) 
             message = "Receiver is whitelisted but is not yet eligible to receive tokens in his wallet (KYC time restriction)";			
 		else
-			message = "Error code is not yet defined";
+			message = "Error code is not defined";
     }
 	//-----------------------------------------------------------------------
 
