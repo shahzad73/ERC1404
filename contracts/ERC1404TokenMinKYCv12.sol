@@ -136,12 +136,12 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 
 
 	// _allowedInvestors = 0    No limit on number of investors        
-	// _allowedInvestors > 0 only X number of investors can have positive balance 
+	// _allowedInvestors > 0 only X number of investors can have non zero balance 
     function resetAllowedInvestors(uint256 _allowedInvestors) 
 	external 
 	onlyOwner {
-		if( _allowedInvestors != 0 )
-			require(_allowedInvestors >= currentTotalInvestors, "Allowed Investors cannot be less than Current holders");
+		if( _allowedInvestors != 0 && _allowedInvestors < currentTotalInvestors )
+			revert( "Allowed Investors cannot be less than Current token holders");
 
 		allowedInvestors = _allowedInvestors;
 		emit AllowedInvestorsReset(_allowedInvestors);
