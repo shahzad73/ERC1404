@@ -66,14 +66,14 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 
 
 	// Transfer Restriction Codes
-	uint8 public constant No_Transfer_Restrictions_Found = 0;
-	uint8 public constant Max_Allowed_Investors_Exceed = 1;
-	uint8 public constant Transfers_Disabled = 2;
-	uint8 public constant Transfer_Value_Cannot_Zero = 3;
-	uint8 public constant Sender_Not_Whitelisted_or_Blocked = 4;
-	uint8 public constant Receiver_Not_Whitelisted_or_Blocked = 5;
-	uint8 public constant Sender_Under_Holding_Period = 6;
-	uint8 public constant Receiver_Under_Holding_Period = 7;
+	uint8 constant No_Transfer_Restrictions_Found = 0;
+	uint8 constant Max_Allowed_Investors_Exceed = 1;
+	uint8 constant Transfers_Disabled = 2;
+	uint8 constant Transfer_Value_Cannot_Zero = 3;
+	uint8 constant Sender_Not_Whitelisted_or_Blocked = 4;
+	uint8 constant Receiver_Not_Whitelisted_or_Blocked = 5;
+	uint8 constant Sender_Under_Holding_Period = 6;
+	uint8 constant Receiver_Under_Holding_Period = 7;
 
 	
 	constructor(uint256 _initialSupply, string memory _name,  string memory _symbol, uint256 _allowedInvestors, uint256 _decimals, string memory _ShareCertificate, string memory _CompanyHomepage, string memory _CompanyLegalDocs, address _atomicSwapContractAddress ) {
