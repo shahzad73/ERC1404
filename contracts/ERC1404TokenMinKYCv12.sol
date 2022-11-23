@@ -141,7 +141,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	external 
 	onlyOwner {
 		if( _allowedInvestors != 0 && _allowedInvestors < currentTotalInvestors )
-			revert( "Allowed Investors cannot be less than Current token holders");
+			revert( "Allowed Investors cannot be less than current token holders");
 
 		allowedInvestors = _allowedInvestors;
 		emit AllowedInvestorsReset(_allowedInvestors);
@@ -165,13 +165,13 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
         return _owner;
     }
     modifier onlyOwner() {
-        require(_owner == msg.sender, "Only owner can call function");
+        require(_owner == msg.sender, "Only owner has access to function");
         _;
     }
     function transferOwnership(address newOwner) 
 	external 
 	onlyOwner {
-        require(newOwner != address(0), "Zero address not allowed");
+        require(newOwner != address(0), "Zero address not allowed as owner");
 		_owner = newOwner;
     }
 	//-----------------------------------------------------------------------
@@ -212,7 +212,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	) 
 	external 
 	{ 
-	  	require(_whitelistControlAuthority[msg.sender] == true, "Not Whitelist Authority");
+	  	require(_whitelistControlAuthority[msg.sender] == true, "Only authorized addresses can change KYC information of investors");
 		setupKYCDataForUser( account, buyRestriction, sellRestriction );
 	}
 
@@ -223,7 +223,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	) 
 	external 
 	{ 
-		require(_whitelistControlAuthority[msg.sender] == true, "Not Whitelist Authority");
+		require(_whitelistControlAuthority[msg.sender] == true, "Only authorized addresses can change KYC information of investors");
 		for (uint i=0; i<account.length; i++) {
 			setupKYCDataForUser( account[i], buyRestriction, sellRestriction );			
 		}		
@@ -266,7 +266,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 
     modifier notRestricted (address from, address to, uint256 value) {
         uint8 restrictionCode = detectTransferRestriction(from, to, value);
-		if( restrictionCode != 0 ) {
+		if( restrictionCode != No_Transfer_Restrictions_Found ) {
 			string memory errorMessage = messageForTransferRestriction(restrictionCode);
 			emit TransferRestrictionDetected( from, to, errorMessage );
         	revert(errorMessage);
@@ -389,8 +389,8 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	external 
 	returns (bool)
 	{
-        require(spender != address(0), "Zero address not allowed");
-		require(amount > 0, "Amount cannot be 0");
+        require(spender != address(0), "Zero address as spender not allowed");
+		require(amount > 0, "Zero Amount not allowed");
 
         _allowances[msg.sender][spender] = amount;
         emit Approval(msg.sender, spender, amount);
@@ -433,7 +433,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	notRestricted (sender, recipient, amount)
 	returns (bool)	
 	{	
-        require(_allowances[sender][msg.sender] >= amount, "Amount cannot be greater than Allowance" );
+        require(_allowances[sender][msg.sender] >= amount, "Sender cannot transfer amount greater than his Allowance" );
 		transferSharesBetweenInvestors ( sender, recipient, amount );
         _allowances[sender][msg.sender] = _allowances[sender][msg.sender] - amount;
 
@@ -464,7 +464,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	)
 	internal
 	{
-        	require(_balances[sender] >= amount, " Amount greater than sender balance");
+        	require(_balances[sender] >= amount, "Sender is trying to transfer amount greater than his balance");
 			
 			// owner account is not counted in currentTotalInvestors in below conditions
 			_balances[sender] = _balances[sender] - amount;
@@ -484,7 +484,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	onlyOwner 
 	external 
 	returns (bool)	{
-        require(account != address(0), "Zero address not allowed");
+        require(account != address(0), "Tokens cannot be minted for address zero");
 
         _totalSupply = _totalSupply + amount;
         _balances[account] = _balances[account] + amount;
@@ -497,8 +497,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	onlyOwner
 	external 
 	returns (bool)	{
-        require(account != address(0), "Zero address not allowed");
-        require(_balances[account] >= amount, "Amount greater than balance");
+        require(_balances[account] >= amount, "Burn amount is greater than address balance");
 
         _totalSupply = _totalSupply - amount;
         _balances[account] = _balances[account] - amount;
