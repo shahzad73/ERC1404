@@ -351,116 +351,12 @@
 			},
 			{
 				"inputs": [],
-				"name": "Max_Allowed_Investors_Exceed",
-				"outputs": [
-					{
-						"internalType": "uint8",
-						"name": "",
-						"type": "uint8"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "No_Transfer_Restrictions_Found",
-				"outputs": [
-					{
-						"internalType": "uint8",
-						"name": "",
-						"type": "uint8"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "Receiver_Not_Whitelisted_or_Blocked",
-				"outputs": [
-					{
-						"internalType": "uint8",
-						"name": "",
-						"type": "uint8"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "Receiver_Under_Holding_Period",
-				"outputs": [
-					{
-						"internalType": "uint8",
-						"name": "",
-						"type": "uint8"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "Sender_Not_Whitelisted_or_Blocked",
-				"outputs": [
-					{
-						"internalType": "uint8",
-						"name": "",
-						"type": "uint8"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "Sender_Under_Holding_Period",
-				"outputs": [
-					{
-						"internalType": "uint8",
-						"name": "",
-						"type": "uint8"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "ShareCertificate",
 				"outputs": [
 					{
 						"internalType": "string",
 						"name": "",
 						"type": "string"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "Transfer_Value_Cannot_Zero",
-				"outputs": [
-					{
-						"internalType": "uint8",
-						"name": "",
-						"type": "uint8"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
-				"name": "Transfers_Disabled",
-				"outputs": [
-					{
-						"internalType": "uint8",
-						"name": "",
-						"type": "uint8"
 					}
 				],
 				"stateMutability": "view",
@@ -1087,11 +983,11 @@
 	},
 	"sources": {
 		"contracts/ERC1404TokenMinKYCv12.sol": {
-			"keccak256": "0xdb376a5ef9ea7c65fdba468ba45fa2ce0ddd0584804cdfb6ddd4706d6be67009",
+			"keccak256": "0xa98a4e9d51846e49e7bfd3ffe7f6a30c6b292fbb1df8c28482567f5534247ba8",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://533fb9e38824da2ff6d7744bbd50fb7579c0574d61e52d472cce18645ae1702c",
-				"dweb:/ipfs/QmX4Qpgcyn76bMBhWoW3d6ZwPJmzxcK9RnPUayXuWm1g8G"
+				"bzz-raw://21895f058b6e619ba3b46c1143916585bcaf3fd936aa8b1eace8fa9a057ad555",
+				"dweb:/ipfs/QmeX2tDmNZxrB8XL8Si3kB2WoDtJEsZYxCfnkmd9xutwBu"
 			]
 		},
 		"contracts/IERC1404.sol": {
