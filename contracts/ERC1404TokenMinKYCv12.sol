@@ -50,7 +50,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
     uint256 private _totalSupply;
     string public name;
     string public symbol;
-	
+
 	string public ShareCertificate;
 	string public CompanyHomepage;
 	string public CompanyLegalDocs;
@@ -75,7 +75,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	uint8 private constant Sender_Under_Holding_Period = 6;
 	uint8 private constant Receiver_Under_Holding_Period = 7;
 
-	
+
 	constructor(uint256 _initialSupply, string memory _name,  string memory _symbol, uint256 _allowedInvestors, uint256 _decimals, string memory _ShareCertificate, string memory _CompanyHomepage, string memory _CompanyLegalDocs, address _atomicSwapContractAddress ) {
 
 			name = _name;
@@ -384,7 +384,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
     function approve(
         address spender,
         uint256 amount
-    )  
+    )
 	override
 	external 
 	returns (bool)

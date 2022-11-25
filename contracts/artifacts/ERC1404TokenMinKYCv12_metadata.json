@@ -968,7 +968,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/ERC1404TokenMinKYCv12.sol": "ERC1404TokenMinKYCv12"
+			"Shahzad/projects/git/ERC1404/contracts/ERC1404TokenMinKYCv12.sol": "ERC1404TokenMinKYCv12"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -982,15 +982,15 @@
 		"remappings": []
 	},
 	"sources": {
-		"contracts/ERC1404TokenMinKYCv12.sol": {
-			"keccak256": "0xa98a4e9d51846e49e7bfd3ffe7f6a30c6b292fbb1df8c28482567f5534247ba8",
+		"Shahzad/projects/git/ERC1404/contracts/ERC1404TokenMinKYCv12.sol": {
+			"keccak256": "0x802ec08846f32a4011cfea483184fafd005683647d8bd08d594d33d3e61093c9",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://21895f058b6e619ba3b46c1143916585bcaf3fd936aa8b1eace8fa9a057ad555",
-				"dweb:/ipfs/QmeX2tDmNZxrB8XL8Si3kB2WoDtJEsZYxCfnkmd9xutwBu"
+				"bzz-raw://414d8d99b36839ee52f56797b43edbbee03e5109f189581c6a0eabe3536ce18d",
+				"dweb:/ipfs/QmZaFkqNqHj7A3GuduYMXbYRTZ56cxu5E6baDfAHLARMdw"
 			]
 		},
-		"contracts/IERC1404.sol": {
+		"Shahzad/projects/git/ERC1404/contracts/IERC1404.sol": {
 			"keccak256": "0x41baa967b5b66221a604a4049ae9866762fd93380b1cc30f0ab2f1d7e1a090a4",
 			"license": "MIT",
 			"urls": [
@@ -998,7 +998,7 @@
 				"dweb:/ipfs/QmcPqSo2BmnPXh5yrmnfzfC1C54GtkQguxJyqTrKpPFDgy"
 			]
 		},
-		"contracts/IERC20Token.sol": {
+		"Shahzad/projects/git/ERC1404/contracts/IERC20Token.sol": {
 			"keccak256": "0xb284120eb6679b8a41eb0d63dd63c806173a6cda09988ddbd6c1ffc05a4f2ee4",
 			"license": "MIT",
 			"urls": [
