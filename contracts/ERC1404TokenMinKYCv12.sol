@@ -40,6 +40,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	event HoldingPeriodReset(uint256 _tradingHoldingPeriod);
 	event WhitelistAuthorityStatusSet(address user);
 	event WhitelistAuthorityStatusRemoved(address user);
+	event TransferFrom( address spender, address sender, address recipient, uint256 amount );
 
 
 	// ERC20 related functions
@@ -437,11 +438,12 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 		transferSharesBetweenInvestors ( sender, recipient, amount );
         _allowances[sender][msg.sender] = _allowances[sender][msg.sender] - amount;
 
+		emit TransferFrom( msg.sender, sender, recipient, amount );
 		return true;
     }
 
 
-	// Force transfer of tokens
+	// Force transfer of  back to issuer
 	function forceTransferToken(
         address from,
         uint256 amount
