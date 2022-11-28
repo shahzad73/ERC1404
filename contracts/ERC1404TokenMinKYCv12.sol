@@ -289,6 +289,8 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 		uint256 buyRestriction, 
 		uint256 sellRestriction 
 	) external { 
+		if(account.length > 50)
+			revert ("Bulk whitelisting more than 50 addresses is not allowed");
 
 		require(_whitelistControlAuthority[msg.sender] == true, "Only authorized addresses can change KYC information of investors");
 		for (uint i=0; i<account.length; i++) {
@@ -425,11 +427,13 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
     view 
 	returns ( string memory message )
     {
+
 		if(restrictionCode <= 7) {
 			message = _messageForTransferRestriction[restrictionCode];
 		} else {
 			message = "Error code is not defined";
 		}
+
     }
 	//-----------------------------------------------------------------------
 
