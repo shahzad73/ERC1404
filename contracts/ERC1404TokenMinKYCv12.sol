@@ -14,13 +14,13 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	// Both datetimes must be less than current datetime to allow the respective operation. Like to get tokens from others, receiver's buy restriction
 	// must be less than current date time. 
 	// 0 means investor is not allowed to buy or sell his token.  0 indicates buyer or seller is not whitelisted. 
-    mapping (address => uint256) private _buyRestriction;  
-	mapping (address => uint256) private _sellRestriction;	
+    mapping (address => uint256) private _receiveRestriction;  
+	mapping (address => uint256) private _sendRestriction;	
 	
 	mapping (address => uint256) private _balances;
     mapping(address => mapping(address => uint256)) private _allowances;
 	address private _owner;
-	
+
 	// These addresses act as whitelist authority and can call modifyKYCData
     mapping (address => bool) private _whitelistControlAuthority;  	
 
@@ -28,11 +28,11 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	// These events are already defined in IERC20Token.sol
     // event Approval(address indexed tokenOwner, address indexed spender, uint256 tokens);
     // event Transfer(address indexed from, address indexed to, uint256 tokens);
-	event TransferRestrictionDetected( address indexed from, address indexed to, string message );
+	event TransferRestrictionDetected( address indexed from, address indexed to, string message, uint8 errorCode );
 	event BurnTokens(address indexed account, uint256 amount);
 	event MintTokens(address indexed account, uint256 amount);
-	event KYCDataForUserSet (address indexed account, uint256 buyRestriction, uint256 sellRestriction);
-	event KYCDataForUserModified (address indexed account, uint256 buyRestriction, uint256 sellRestriction);
+	event KYCDataForUserSet (address indexed account, uint256 receiveRestriction, uint256 sendRestriction);
+	event KYCDataForUserModified (address indexed account, uint256 receiveRestriction, uint256 sendRestriction);
     event ShareCertificateReset (string _ShareCertificate);
     event CompanyHomepageReset (string _CompanyHomepage);
     event CompanyLegalDocsReset (string _CompanyLegalDocs);
@@ -40,7 +40,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	event HoldingPeriodReset(uint256 _tradingHoldingPeriod);
 	event WhitelistAuthorityStatusSet(address user);
 	event WhitelistAuthorityStatusRemoved(address user);
-	event TransferFrom( address spender, address sender, address recipient, uint256 amount );
+	event TransferFrom( address indexed spender, address indexed sender, address indexed recipient, uint256 amount );
 
 
 	// ERC20 related functions
@@ -106,10 +106,10 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 			decimals = _decimals;
 
 			_owner = msg.sender;
-			_buyRestriction[_owner] = 1;
-			_sellRestriction[_owner] = 1;
-			_buyRestriction[_atomicSwapContractAddress] = 1;
-			_sellRestriction[_atomicSwapContractAddress] = 1;
+			_receiveRestriction[_owner] = 1;
+			_sendRestriction[_owner] = 1;
+			_receiveRestriction[_atomicSwapContractAddress] = 1;
+			_sendRestriction[_atomicSwapContractAddress] = 1;
 
 
 			allowedInvestors = _allowedInvestors;
@@ -274,27 +274,28 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
   	// Set buy and sell restrictions on investors 
 	function modifyKYCData (
 		address account, 
-		uint256 buyRestriction, 
-		uint256 sellRestriction 
+		uint256 receiveRestriction, 
+		uint256 sendRestriction 
 	) external { 
 
 	  	require(_whitelistControlAuthority[msg.sender] == true, "Only authorized addresses can change KYC information of investors");
-		setupKYCDataForUser( account, buyRestriction, sellRestriction );
+		setupKYCDataForUser( account, receiveRestriction, sendRestriction );
 
 	}
 
 
 	function bulkWhitelistWallets (
 		address[] memory account, 
-		uint256 buyRestriction, 
-		uint256 sellRestriction 
+		uint256 receiveRestriction, 
+		uint256 sendRestriction 
 	) external { 
+
 		if(account.length > 50)
 			revert ("Bulk whitelisting more than 50 addresses is not allowed");
 
 		require(_whitelistControlAuthority[msg.sender] == true, "Only authorized addresses can change KYC information of investors");
 		for (uint i=0; i<account.length; i++) {
-			setupKYCDataForUser( account[i], buyRestriction, sellRestriction );			
+			setupKYCDataForUser( account[i], receiveRestriction, sendRestriction );			
 		}		
 
 	}
@@ -302,22 +303,22 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 
 	function setupKYCDataForUser (
 		address account, 
-		uint256 buyRestriction, 
-		uint256 sellRestriction
+		uint256 receiveRestriction, 
+		uint256 sendRestriction
 	) internal {	
 
-		uint256 tmpBuyRestriction = _buyRestriction[account];
-		uint256 tmpSellRestriction = _sellRestriction[account];
+		uint256 tmpReceiveRestriction = _receiveRestriction[account];
+		uint256 tmpSendRestriction = _sendRestriction[account];
 
-		_buyRestriction[account] = buyRestriction;
-		_sellRestriction[account] = sellRestriction;		
+		_receiveRestriction[account] = receiveRestriction;
+		_sendRestriction[account] = sendRestriction;		
 
 		// If both buy restriction and sell restriction are 0 then this is kyc restrictions set 
 		// otherwise kyc restrictions are being modified
-		if(tmpBuyRestriction == 0 && tmpSellRestriction == 0) {
-			emit KYCDataForUserSet (account, buyRestriction, sellRestriction);
+		if(tmpReceiveRestriction == 0 && tmpSendRestriction == 0) {
+			emit KYCDataForUserSet (account, receiveRestriction, sendRestriction);
 		} else {
-			emit KYCDataForUserModified ( account, buyRestriction, sellRestriction);
+			emit KYCDataForUserModified ( account, receiveRestriction, sendRestriction);
 		}
 
 	}
@@ -330,7 +331,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	view
 	returns ( uint256, uint256 ) {
 
-		return (_buyRestriction[user] , _sellRestriction[user] );
+		return (_receiveRestriction[user] , _sendRestriction[user] );
 
 	}
 	//-----------------------------------------------------------------------
@@ -350,12 +351,12 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 		if( restrictionCode != NO_TRANSFER_RESTRICTION_FOUND ) {
 
 			string memory errorMessage = messageForTransferRestriction(restrictionCode);
-			emit TransferRestrictionDetected( from, to, errorMessage );
+			emit TransferRestrictionDetected( from, to, errorMessage, restrictionCode );
         	revert(errorMessage);
 
 		} else 
         	_;
-		
+
     }
 
 
@@ -375,19 +376,19 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 		  	  	return TRANSFER_VALUE_CANNOT_ZERO;   
 			}
 
-		  	if( _sellRestriction[_from] == 0 ) {
+		  	if( _sendRestriction[_from] == 0 ) {
 				return SENDER_NOT_WHITELISTED_OR_BLOCKED;   // Sender is not whitelisted or blocked
 			}
 
-		  	if( _buyRestriction[_to] == 0 ) {
+		  	if( _receiveRestriction[_to] == 0 ) {
 				return RECEIVER_NOT_WHITELISTED_OR_BLOCKED;	// Receiver is not whitelisted or blocked
 			}
 
-			if( _sellRestriction[_from] > block.timestamp ) {
+			if( _sendRestriction[_from] > block.timestamp ) {
 				return SENDER_UNDER_HOLDING_PERIOD;	// Receiver is whitelisted but is not eligible to send tokens and still under holding period (KYC time restriction)
 			}
 
-			if( _buyRestriction[_to] > block.timestamp ) {
+			if( _receiveRestriction[_to] > block.timestamp ) {
 				return RECEIVER_UNDER_HOLDING_PERIOD;	// Receiver is whitelisted but is not yet eligible to receive tokens in his wallet (KYC time restriction)
 			}
 
@@ -483,7 +484,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
     }
 
 
- 
+
     function allowance(address ownby, address spender) 
 	override
 	external 
