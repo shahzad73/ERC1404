@@ -263,6 +263,37 @@
 				"anonymous": false,
 				"inputs": [
 					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "spender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "recipient",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "TransferFrom",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
 						"indexed": true,
 						"internalType": "address",
 						"name": "from",
@@ -640,7 +671,7 @@
 						"type": "string"
 					}
 				],
-				"stateMutability": "pure",
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -983,11 +1014,11 @@
 	},
 	"sources": {
 		"Shahzad/projects/git/ERC1404/contracts/ERC1404TokenMinKYCv12.sol": {
-			"keccak256": "0x802ec08846f32a4011cfea483184fafd005683647d8bd08d594d33d3e61093c9",
+			"keccak256": "0x8ce293e0ef9dc9c18d4ee7cf3171172f8f8b9cc9c4f0d70269726fce7c3cee15",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://414d8d99b36839ee52f56797b43edbbee03e5109f189581c6a0eabe3536ce18d",
-				"dweb:/ipfs/QmZaFkqNqHj7A3GuduYMXbYRTZ56cxu5E6baDfAHLARMdw"
+				"bzz-raw://67111e6cf650593af182630052385994a20a1a0e2c7f7f45a2b8d3b5622c4ce5",
+				"dweb:/ipfs/QmeGeJSMiFZb9qjuZ3D3DhNJpLoZbHjw6yjVBffSamR6oP"
 			]
 		},
 		"Shahzad/projects/git/ERC1404/contracts/IERC1404.sol": {
