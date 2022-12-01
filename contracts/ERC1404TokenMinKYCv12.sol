@@ -429,7 +429,7 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 	returns ( string memory message )
     {
 
-		if(restrictionCode <= 7) {
+		if(restrictionCode <= _messageForTransferRestriction.length) {
 			message = _messageForTransferRestriction[restrictionCode];
 		} else {
 			message = "Error code is not defined";

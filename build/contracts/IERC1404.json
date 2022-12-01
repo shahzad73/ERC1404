@@ -64,15 +64,15 @@
     "absolutePath": "project:/contracts/IERC1404.sol",
     "exportedSymbols": {
       "IERC1404": [
-        5949
+        6848
       ]
     },
-    "id": 5950,
+    "id": 6849,
     "license": "MIT",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 5928,
+        "id": 6827,
         "literals": [
           "solidity",
           "^",
@@ -80,7 +80,7 @@
           ".0"
         ],
         "nodeType": "PragmaDirective",
-        "src": "32:23:12"
+        "src": "32:23:13"
       },
       {
         "abstract": true,
@@ -88,39 +88,39 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": false,
-        "id": 5949,
+        "id": 6848,
         "linearizedBaseContracts": [
-          5949
+          6848
         ],
         "name": "IERC1404",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "documentation": {
-              "id": 5929,
+              "id": 6828,
               "nodeType": "StructuredDocumentation",
-              "src": "90:368:12",
+              "src": "90:368:13",
               "text": "@notice Detects if a transfer will be reverted and if so returns an appropriate reference code\n @param from Sending address\n @param to Receiving address\n @param value Amount of tokens being transferred\n @return Code by which to reference message for rejection reasoning\n @dev Overwrite with your custom transfer restriction logic"
             },
             "functionSelector": "d4ce1415",
-            "id": 5940,
+            "id": 6839,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "detectTransferRestriction",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5936,
+              "id": 6835,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5931,
+                  "id": 6830,
                   "mutability": "mutable",
                   "name": "from",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5940,
-                  "src": "500:12:12",
+                  "scope": 6839,
+                  "src": "500:12:13",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -128,10 +128,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5930,
+                    "id": 6829,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "500:7:12",
+                    "src": "500:7:13",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -142,12 +142,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 5933,
+                  "id": 6832,
                   "mutability": "mutable",
                   "name": "to",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5940,
-                  "src": "514:10:12",
+                  "scope": 6839,
+                  "src": "514:10:13",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -155,10 +155,10 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 5932,
+                    "id": 6831,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "514:7:12",
+                    "src": "514:7:13",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -169,12 +169,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 5935,
+                  "id": 6834,
                   "mutability": "mutable",
                   "name": "value",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5940,
-                  "src": "526:13:12",
+                  "scope": 6839,
+                  "src": "526:13:13",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -182,10 +182,10 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 5934,
+                    "id": 6833,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "526:7:12",
+                    "src": "526:7:13",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -194,20 +194,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "499:41:12"
+              "src": "499:41:13"
             },
             "returnParameters": {
-              "id": 5939,
+              "id": 6838,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5938,
+                  "id": 6837,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5940,
-                  "src": "570:5:12",
+                  "scope": 6839,
+                  "src": "570:5:13",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -215,10 +215,10 @@
                     "typeString": "uint8"
                   },
                   "typeName": {
-                    "id": 5937,
+                    "id": 6836,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
-                    "src": "570:5:12",
+                    "src": "570:5:13",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint8",
                       "typeString": "uint8"
@@ -227,40 +227,40 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "569:7:12"
+              "src": "569:7:13"
             },
-            "scope": 5949,
-            "src": "463:114:12",
+            "scope": 6848,
+            "src": "463:114:13",
             "stateMutability": "view",
             "virtual": true,
             "visibility": "public"
           },
           {
             "documentation": {
-              "id": 5941,
+              "id": 6840,
               "nodeType": "StructuredDocumentation",
-              "src": "583:274:12",
+              "src": "583:274:13",
               "text": "@notice Returns a human-readable message for a given restriction code\n @param restrictionCode Identifier for looking up a message\n @return Text showing the restriction's reasoning\n @dev Overwrite with your custom message and restrictionCode handling"
             },
             "functionSelector": "7f4ab1dd",
-            "id": 5948,
+            "id": 6847,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
             "name": "messageForTransferRestriction",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 5944,
+              "id": 6843,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5943,
+                  "id": 6842,
                   "mutability": "mutable",
                   "name": "restrictionCode",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5948,
-                  "src": "904:21:12",
+                  "scope": 6847,
+                  "src": "904:21:13",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -268,10 +268,10 @@
                     "typeString": "uint8"
                   },
                   "typeName": {
-                    "id": 5942,
+                    "id": 6841,
                     "name": "uint8",
                     "nodeType": "ElementaryTypeName",
-                    "src": "904:5:12",
+                    "src": "904:5:13",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint8",
                       "typeString": "uint8"
@@ -280,20 +280,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "903:23:12"
+              "src": "903:23:13"
             },
             "returnParameters": {
-              "id": 5947,
+              "id": 6846,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 5946,
+                  "id": 6845,
                   "mutability": "mutable",
                   "name": "",
                   "nodeType": "VariableDeclaration",
-                  "scope": 5948,
-                  "src": "956:13:12",
+                  "scope": 6847,
+                  "src": "956:13:13",
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
@@ -301,10 +301,10 @@
                     "typeString": "string"
                   },
                   "typeName": {
-                    "id": 5945,
+                    "id": 6844,
                     "name": "string",
                     "nodeType": "ElementaryTypeName",
-                    "src": "956:6:12",
+                    "src": "956:6:13",
                     "typeDescriptions": {
                       "typeIdentifier": "t_string_storage_ptr",
                       "typeString": "string"
@@ -313,20 +313,20 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "955:15:12"
+              "src": "955:15:13"
             },
-            "scope": 5949,
-            "src": "862:109:12",
+            "scope": 6848,
+            "src": "862:109:13",
             "stateMutability": "view",
             "virtual": true,
             "visibility": "public"
           }
         ],
-        "scope": 5950,
-        "src": "57:916:12"
+        "scope": 6849,
+        "src": "57:916:13"
       }
     ],
-    "src": "32:943:12"
+    "src": "32:943:13"
   },
   "compiler": {
     "name": "solc",
@@ -334,7 +334,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.9",
-  "updatedAt": "2022-11-25T15:59:37.999Z",
+  "updatedAt": "2022-12-01T05:32:46.196Z",
   "devdoc": {
     "kind": "dev",
     "methods": {
