@@ -158,6 +158,31 @@
 					{
 						"indexed": true,
 						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "IssuerForceTransfer",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
 						"name": "account",
 						"type": "address"
 					},
@@ -1130,11 +1155,11 @@
 			]
 		},
 		"contracts/ERC1404TokenMinKYCv13.sol": {
-			"keccak256": "0x7b7d8b6a057a7c35ed513ec2c6523933dd81e856070165a9fd3404de0a99d88c",
+			"keccak256": "0x44c17092d80d8a06e805195875a329389ccf823e985632c0c160e9999639b5bf",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1864dd5ebb76ab895a9770f3e5291638a78f85dc4f8ea902e00d74341ad308fc",
-				"dweb:/ipfs/QmNtCP3p8mJz4HwJzFsXi7wtvDV8PKwkCB8C4BMCxKqQdK"
+				"bzz-raw://42b2135af429b2069788f5d86b4eb5db7ffe6a4c9a2c7fd32a1892fb3265e4d7",
+				"dweb:/ipfs/QmSmesV8scE7XET9C6bmbEvQFRuroCHeA648TTd9gX6B9r"
 			]
 		},
 		"contracts/IERC1404.sol": {

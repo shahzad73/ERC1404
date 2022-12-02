@@ -25,9 +25,6 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
     mapping (address => bool) private _whitelistControlAuthority;  	
 
 
-	// These events are already defined in IERC20Token.sol
-    // event Approval(address indexed tokenOwner, address indexed spender, uint256 tokens);
-    // event Transfer(address indexed from, address indexed to, uint256 tokens);
 	event TransferRestrictionDetected( address indexed from, address indexed to, string message, uint8 errorCode );
 	event BurnTokens(address indexed account, uint256 amount);
 	event MintTokens(address indexed account, uint256 amount);
@@ -290,8 +287,9 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 		uint256 sendRestriction 
 	) external { 
 
-		if(account.length > 50)
+		if(account.length > 50) {
 			revert ("Bulk whitelisting more than 50 addresses is not allowed");
+		}
 
 		require(_whitelistControlAuthority[msg.sender] == true, "Only authorized addresses can change KYC information of investors");
 		for (uint i=0; i<account.length; i++) {
@@ -369,8 +367,9 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 
 	      	// check if holding period is in effect on overall transfers and sender is not owner. 
 			// only owner is allwed to transfer under holding period
-		  	if(block.timestamp < tradingHoldingPeriod && _from != _owner)
+		  	if(block.timestamp < tradingHoldingPeriod && _from != _owner) {
 			 	return TRANSFERS_DISABLED;   
+			}
 
 		  	if( value <= 0) {
 		  	  	return TRANSFER_VALUE_CANNOT_ZERO;   
@@ -411,10 +410,11 @@ contract ERC1404TokenMinKYCv12 is IERC20Token, IERC1404 {
 						// 1. sender is sending his whole balance to anohter whitelisted investor regardless he has any balance or not
 						// 2. sender must not be owner/isser
 						//    owner sending his whole balance to investor will exceed allowedInvestors restriction if currentTotalInvestors = allowedInvestors
-						if( _balances[_from] == value && _from != _owner)    
+						if( _balances[_from] == value && _from != _owner) {   
 							return NO_TRANSFER_RESTRICTION_FOUND;
-						else
+						} else {
 							return MAX_ALLOWED_INVESTORS_EXCEED;
+						}
 					}
 				}
 			}
