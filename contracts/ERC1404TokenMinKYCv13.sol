@@ -88,22 +88,22 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 			_decimals = _decimalsPlaces;
 
 			// These variables set EPOCH time    1 = 1 January 1970
-			_receiveRestriction[owner()] = 1;
-			_sendRestriction[owner()] = 1;
+			_receiveRestriction[super.owner()] = 1;
+			_sendRestriction[super.owner()] = 1;
 			_receiveRestriction[_atomicSwapContractAddress] = 1;
 			_sendRestriction[_atomicSwapContractAddress] = 1;
 
 			allowedInvestors = _allowedInvestors;
 
 			// add message sender to whitelist authority list
-			_whitelistControlAuthority[owner()] = true;
+			_whitelistControlAuthority[super.owner()] = true;
 
 			ShareCertificate = _ShareCertificate;
 			CompanyHomepage = _CompanyHomepage;
 			CompanyLegalDocs = _CompanyLegalDocs;
 
-			_mint(owner() , _initialSupply);
-			emit MintTokens(owner(), _initialSupply);
+			_mint(super.owner() , _initialSupply);
+			emit MintTokens(super.owner(), _initialSupply);
 	}
 	
 
@@ -115,7 +115,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 
     modifier onlyWhitelistControlAuthority () {
 
-	  	require(_whitelistControlAuthority[_msgSender()] == true, "Only authorized addresses can change KYC information of investors");
+	  	require(_whitelistControlAuthority[super._msgSender()] == true, "Only authorized addresses can change KYC information of investors");
         _;
 
     }
@@ -354,7 +354,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 
 	      	// check if holding period is in effect on overall transfers and sender is not owner. 
 			// only owner is allwed to transfer under holding period
-		  	if(block.timestamp < tradingHoldingPeriod && _from != owner()) {
+		  	if(block.timestamp < tradingHoldingPeriod && _from != super.owner()) {
 			 	return TRANSFERS_DISABLED;   
 			}
 
@@ -383,7 +383,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 			if(allowedInvestors == 0) {
 				return NO_TRANSFER_RESTRICTION_FOUND;
 			} else {
-				if( balanceOf(_to) > 0 || _to == owner()) {
+				if( balanceOf(_to) > 0 || _to == super.owner()) {
 					// token can be transferred if the receiver alreay holding tokens and already counted in currentTotalInvestors
 					// or receiver is issuer account. issuer account do not count in currentTotalInvestors
 					return NO_TRANSFER_RESTRICTION_FOUND;
@@ -397,7 +397,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 						// 1. sender is sending his whole balance to anohter whitelisted investor regardless he has any balance or not
 						// 2. sender must not be owner/isser
 						//    owner sending his whole balance to investor will exceed allowedInvestors restriction if currentTotalInvestors = allowedInvestors
-						if( balanceOf(_from) == value && _from != owner()) {    
+						if( balanceOf(_from) == value && _from != super.owner()) {    
 							return NO_TRANSFER_RESTRICTION_FOUND;
 						} else {
 							return MAX_ALLOWED_INVESTORS_EXCEED;
@@ -439,10 +439,10 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
     ) 	
 	override
 	public 
-	notRestricted (_msgSender(), recipient, amount)
+	notRestricted (super._msgSender(), recipient, amount)
 	returns (bool) {
 
-		super._transfer ( _msgSender(), recipient, amount );
+		super._transfer ( super._msgSender(), recipient, amount );
 		return true;
 
     }
@@ -460,7 +460,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	returns (bool)	{	
 
 		super.transferFrom(sender, recipient, amount);
-		emit TransferFrom( msg.sender, sender, recipient, amount );
+		emit TransferFrom( super._msgSender(), sender, recipient, amount );
 		return true;
 
     }
@@ -476,7 +476,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	external 
 	returns (bool)  {
 		
-		super._transfer(from, owner(), amount);
+		super._transfer(from, super.owner(), amount);
 		emit IssuerForceTransfer (from, super.owner(), amount);
 		return true;
 
