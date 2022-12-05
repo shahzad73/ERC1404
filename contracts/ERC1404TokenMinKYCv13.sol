@@ -11,12 +11,13 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 
 	// Set receive and send restrictions on investors
 	// date is Linux Epoch datetime
-	// Both datetimes must be less than current datetime to allow the respective operation
 	// Default values is 0 which means investor is not whitelisted
     mapping (address => uint64) private _receiveRestriction;  
 	mapping (address => uint64) private _sendRestriction;
 
 	// These addresses act as whitelist authority and can call modifyKYCData
+	// There is possibility that isser may let third party like Exchange to control 
+	// whitelisting addresses 
     mapping (address => bool) private _whitelistControlAuthority;
 
 	event TransferRestrictionDetected( address indexed from, address indexed to, string message, uint8 errorCode );
@@ -42,12 +43,17 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	string public CompanyLegalDocs;
 
 
-	// These variables control how many investors can have non-zero token balance, holding period and decimal places
-	// if allowedInvestors = 0 then there is no limit of number of investors who can hold non-zero balance
-	// tradingHoldingPeriod is EpochTime, if set in future then it will stop all tradings between investors
+	// These variables control how many investors can have non-zero token balance
+	// if allowedInvestors = 0 then there is no limit of number of investors who can 
+	// hold non-zero balance
 	uint64 public currentTotalInvestors = 0;		
 	uint64 public allowedInvestors = 0;
+
+	// Holding period and decimal places	
+	// tradingHoldingPeriod is EpochTime, if set in future then it will stop 
+	// all transfers between investors
 	uint64 public tradingHoldingPeriod = 1;
+
 	uint8 private _decimals = 18;	
 
 
@@ -62,7 +68,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	uint8 private constant RECEIVER_UNDER_HOLDING_PERIOD = 7;
 	string[] private _messageForTransferRestriction = [
 		"No transfer restrictions found", 
-		"Max allowed investor restriction is in place, this transfer will exceed this limitation", 
+		"Max allowed addresses with non-zero restriction is in place, this transfer will exceed this limitation", 
 		"All transfers are disabled because Holding Period is not yet expired", 
 		"Zero transfer amount not allowed",
 		"Sender is not whitelisted or blocked",
@@ -88,22 +94,22 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 			_decimals = _decimalsPlaces;
 
 			// These variables set EPOCH time    1 = 1 January 1970
-			_receiveRestriction[super.owner()] = 1;
-			_sendRestriction[super.owner()] = 1;
+			_receiveRestriction[Ownable.owner()] = 1;
+			_sendRestriction[Ownable.owner()] = 1;
 			_receiveRestriction[_atomicSwapContractAddress] = 1;
 			_sendRestriction[_atomicSwapContractAddress] = 1;
 
 			allowedInvestors = _allowedInvestors;
 
 			// add message sender to whitelist authority list
-			_whitelistControlAuthority[super.owner()] = true;
+			_whitelistControlAuthority[Ownable.owner()] = true;
 
 			ShareCertificate = _ShareCertificate;
 			CompanyHomepage = _CompanyHomepage;
 			CompanyLegalDocs = _CompanyLegalDocs;
 
-			_mint(super.owner() , _initialSupply);
-			emit MintTokens(super.owner(), _initialSupply);
+			_mint(Ownable.owner() , _initialSupply);
+			emit MintTokens(Ownable.owner(), _initialSupply);
 	}
 	
 
@@ -112,10 +118,9 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	// ------------------------------------------------------------------------
 	// Modifiers of this contract 
 	// ------------------------------------------------------------------------
-
     modifier onlyWhitelistControlAuthority () {
 
-	  	require(_whitelistControlAuthority[super._msgSender()] == true, "Only authorized addresses can change KYC information of investors");
+	  	require(_whitelistControlAuthority[_msgSender()] == true, "Only authorized addresses can control whitelisting of holder addresses");
         _;
 
     }
@@ -149,10 +154,21 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 
     function mint (address account, uint256 amount)		
     external        
-	onlyOwner
+	Ownable.onlyOwner
     returns (bool)
     {
-		 super._mint(account, amount);
+		require ( _receiveRestriction[account] != 0, "Address is not yet whitelisted by issuer" );
+		require ( amount != 0, "Zero amount cannot be minted" );
+
+		 ERC20._mint(account, amount);
+
+		 // This is special case in which Call to mint will surely increase currentTotalInvestors
+		 // if allowedInvestors restriction is in place and minting resulted in increase 
+		 // in currentTotalInvestors greater than allowedInvestors then contract need to adjust 
+		 // allowedInvestors.
+		 if(allowedInvestors != 0 && currentTotalInvestors > allowedInvestors)
+		 	allowedInvestors = currentTotalInvestors;
+		 
 		 emit MintTokens(account, amount);
 		 return true;
     }
@@ -160,10 +176,11 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 
     function burn (address account, uint256 amount)
 	external     
-	onlyOwner   
+	Ownable.onlyOwner
     returns (bool)
     {
-		 super._burn(account, amount);
+		 require ( amount != 0, "Zero amount cannot be burned" );		
+		 ERC20._burn(account, amount);
 		 emit BurnTokens(account, amount);		 
 		 return true;
     }
@@ -179,7 +196,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 		string memory _ShareCertificate
 	) 
 	external 
-	onlyOwner {
+	Ownable.onlyOwner {
 
 		 ShareCertificate = _ShareCertificate;
 		 emit ShareCertificateReset (_ShareCertificate);
@@ -190,7 +207,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 		string memory _CompanyHomepage
 	) 
 	external 
-	onlyOwner {
+	Ownable.onlyOwner {
 
 		 CompanyHomepage = _CompanyHomepage;
 		 emit CompanyHomepageReset (_CompanyHomepage);
@@ -201,7 +218,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 		string memory _CompanyLegalDocs
 	) 
 	external 
-	onlyOwner {
+	Ownable.onlyOwner {
 
 		CompanyLegalDocs = _CompanyLegalDocs;
 		emit CompanyLegalDocsReset (_CompanyLegalDocs);
@@ -210,18 +227,18 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 
 
 	// ------------------------------------------------------------------------
-	// Number of investors and holding period management
+	// Number of addresses who can hold non-zero balance and holding period management
 	// ------------------------------------------------------------------------
-	// _allowedInvestors = 0    No limit on number of investors        
-	// _allowedInvestors > 0 only X number of investors can have non zero balance 
+	// _allowedInvestors = 0    No limit on number of investors (or number of addresses with non-zero balance)         
+	// _allowedInvestors > 0 only X number of addresses can have non zero balance 
     function resetAllowedInvestors(
 		uint64 _allowedInvestors
 	) 
 	external 
-	onlyOwner {
+	Ownable.onlyOwner {
 
 		if( _allowedInvestors != 0 && _allowedInvestors < currentTotalInvestors ) {
-			revert( "Allowed Investors cannot be less than current token holders");
+			revert( "Allowed Token holders cannot be less than current token holders with non-zero balance");
 		}
 
 		allowedInvestors = _allowedInvestors;
@@ -230,11 +247,11 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
     }
 
 
-    function setTradingHoldingPeriod(
+    function setTradingHoldingPeriod (
 		uint64 _tradingHoldingPeriod
 	) 
 	external 
-	onlyOwner {
+	Ownable.onlyOwner {
 
 		 tradingHoldingPeriod = _tradingHoldingPeriod;
 		 emit HoldingPeriodReset(_tradingHoldingPeriod);
@@ -252,7 +269,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 		address user
 	) 
 	external 
-	onlyOwner {
+	Ownable.onlyOwner {
 
 		_whitelistControlAuthority[user] = true;
 		emit WhitelistAuthorityStatusSet(user);
@@ -263,7 +280,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 		address user
 	) 
 	external 
-	onlyOwner {
+	Ownable.onlyOwner {
 
 		delete _whitelistControlAuthority[user];
 		emit WhitelistAuthorityStatusRemoved(user);
@@ -354,7 +371,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 
 	      	// check if holding period is in effect on overall transfers and sender is not owner. 
 			// only owner is allwed to transfer under holding period
-		  	if(block.timestamp < tradingHoldingPeriod && _from != super.owner()) {
+		  	if(block.timestamp < tradingHoldingPeriod && _from != Ownable.owner()) {
 			 	return TRANSFERS_DISABLED;   
 			}
 
@@ -383,7 +400,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 			if(allowedInvestors == 0) {
 				return NO_TRANSFER_RESTRICTION_FOUND;
 			} else {
-				if( balanceOf(_to) > 0 || _to == super.owner()) {
+				if( ERC20.balanceOf(_to) > 0 || _to == Ownable.owner()) {
 					// token can be transferred if the receiver alreay holding tokens and already counted in currentTotalInvestors
 					// or receiver is issuer account. issuer account do not count in currentTotalInvestors
 					return NO_TRANSFER_RESTRICTION_FOUND;
@@ -397,7 +414,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 						// 1. sender is sending his whole balance to anohter whitelisted investor regardless he has any balance or not
 						// 2. sender must not be owner/isser
 						//    owner sending his whole balance to investor will exceed allowedInvestors restriction if currentTotalInvestors = allowedInvestors
-						if( balanceOf(_from) == value && _from != super.owner()) {    
+						if( ERC20.balanceOf(_from) == value && _from != Ownable.owner()) {    
 							return NO_TRANSFER_RESTRICTION_FOUND;
 						} else {
 							return MAX_ALLOWED_INVESTORS_EXCEED;
@@ -439,10 +456,10 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
     ) 	
 	override
 	public 
-	notRestricted (super._msgSender(), recipient, amount)
+	notRestricted (_msgSender(), recipient, amount)
 	returns (bool) {
 
-		super._transfer ( super._msgSender(), recipient, amount );
+		transferSharesBetweenInvestors ( _msgSender(), recipient, amount );
 		return true;
 
     }
@@ -459,8 +476,8 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	notRestricted (sender, recipient, amount)
 	returns (bool)	{	
 
-		super.transferFrom(sender, recipient, amount);
-		emit TransferFrom( super._msgSender(), sender, recipient, amount );
+		transferSharesBetweenInvestors ( sender, recipient, amount );
+		emit TransferFrom( _msgSender(), sender, recipient, amount );
 		return true;
 
     }
@@ -472,13 +489,36 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
         address from,
         uint256 amount
 	) 
-	onlyOwner
+	Ownable.onlyOwner
 	external 
 	returns (bool)  {
 		
-		super._transfer(from, super.owner(), amount);
-		emit IssuerForceTransfer (from, super.owner(), amount);
+		transferSharesBetweenInvestors ( from, Ownable.owner(), amount );
+		emit IssuerForceTransfer (from, Ownable.owner(), amount);
 		return true;
+
+	}
+
+
+
+	// Transfer tokens from one account to other
+	// Also manage current number of account holders
+	function transferSharesBetweenInvestors (
+        address sender,
+        address recipient,
+        uint256 amount	
+	) 
+	internal {
+
+		if( ERC20.balanceOf(recipient) == 0 && recipient != owner() ) {
+			currentTotalInvestors = currentTotalInvestors + 1;
+		}
+
+		ERC20._transfer(sender, recipient, amount);
+
+		if( ERC20.balanceOf(sender) == 0 && sender != owner() ) {
+			currentTotalInvestors = currentTotalInvestors - 1;		
+		}
 
 	}
 
