@@ -16,7 +16,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	mapping (address => uint64) private _sendRestriction;
 
 	// These addresses act as whitelist authority and can call modifyKYCData
-	// There is possibility that isser may let third party like Exchange to control 
+	// There is possibility that issuer may let third party like Exchange to control 
 	// whitelisting addresses 
     mapping (address => bool) private _whitelistControlAuthority;
 
