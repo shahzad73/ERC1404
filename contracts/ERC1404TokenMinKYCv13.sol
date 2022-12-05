@@ -152,6 +152,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
     }
 	
 
+
     function mint (address account, uint256 amount)		
     external        
 	Ownable.onlyOwner
@@ -159,18 +160,22 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
     {
 		require ( _receiveRestriction[account] != 0, "Address is not yet whitelisted by issuer" );
 		require ( amount != 0, "Zero amount cannot be minted" );
+		if( 
+			( balanceOf(account) == 0 ) && 
+			( allowedInvestors != 0 ) && 
+			( currentTotalInvestors + 1 ) > allowedInvestors ) 
+		{
+			revert ("Minting not allowed to this address as allowed token holder restriction is in place and minting will increase the allowed limit");
+		}
 
-		 ERC20._mint(account, amount);
+		// minting will sure increase currentTotalInvestors if address balance is 0
+		if( balanceOf(account) == 0 && account != owner() ) {
+			currentTotalInvestors = currentTotalInvestors + 1;
+		}
 
-		 // This is special case in which Call to mint will surely increase currentTotalInvestors
-		 // if allowedInvestors restriction is in place and minting resulted in increase 
-		 // in currentTotalInvestors greater than allowedInvestors then contract need to adjust 
-		 // allowedInvestors.
-		 if(allowedInvestors != 0 && currentTotalInvestors > allowedInvestors)
-		 	allowedInvestors = currentTotalInvestors;
-		 
-		 emit MintTokens(account, amount);
-		 return true;
+		ERC20._mint(account, amount);		 
+		emit MintTokens(account, amount);
+		return true;
     }
 
 
@@ -180,7 +185,14 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
     returns (bool)
     {
 		 require ( amount != 0, "Zero amount cannot be burned" );		
+
 		 ERC20._burn(account, amount);
+
+		// burning will decrease currentTotalInvestors if address balance becomes 0
+		if( balanceOf(account) == 0 && account != owner() ) {
+			currentTotalInvestors = currentTotalInvestors - 1;
+		}
+
 		 emit BurnTokens(account, amount);		 
 		 return true;
     }
@@ -262,7 +274,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 
 
 	//-----------------------------------------------------------------------
-    // Manage whitelist autority and KYC status
+    // Manage whitelist authority and KYC status
 	//-----------------------------------------------------------------------
 	
 	function setWhitelistAuthorityStatus(
@@ -370,7 +382,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	returns ( uint8 status )  {	
 
 	      	// check if holding period is in effect on overall transfers and sender is not owner. 
-			// only owner is allwed to transfer under holding period
+			// only owner is allowed to transfer under holding period
 		  	if(block.timestamp < tradingHoldingPeriod && _from != Ownable.owner()) {
 			 	return TRANSFERS_DISABLED;   
 			}
@@ -401,7 +413,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 				return NO_TRANSFER_RESTRICTION_FOUND;
 			} else {
 				if( ERC20.balanceOf(_to) > 0 || _to == Ownable.owner()) {
-					// token can be transferred if the receiver alreay holding tokens and already counted in currentTotalInvestors
+					// token can be transferred if the receiver already holding tokens and already counted in currentTotalInvestors
 					// or receiver is issuer account. issuer account do not count in currentTotalInvestors
 					return NO_TRANSFER_RESTRICTION_FOUND;
 				} else {
@@ -411,8 +423,8 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 					} else {
 						// In this section currentTotalInvestors = allowedInvestors and no more transfers to new investors are allowed
 						// except following conditions 
-						// 1. sender is sending his whole balance to anohter whitelisted investor regardless he has any balance or not
-						// 2. sender must not be owner/isser
+						// 1. sender is sending his whole balance to another whitelisted investor regardless he has any balance or not
+						// 2. sender must not be owner/issuer
 						//    owner sending his whole balance to investor will exceed allowedInvestors restriction if currentTotalInvestors = allowedInvestors
 						if( ERC20.balanceOf(_from) == value && _from != Ownable.owner()) {    
 							return NO_TRANSFER_RESTRICTION_FOUND;
