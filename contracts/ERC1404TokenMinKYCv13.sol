@@ -165,7 +165,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 		// currentTotalInvestors getting larger than allowedInvestors. The issuer account is exempted from this condition as
 		// issuer account is not counted in currentTotalInvestors
 		if( 
-			( account != owner() ) &&       // issuer account is exempted from this condition
+			( account != Ownable.owner() ) &&       // issuer account is exempted from this condition
 			( ERC20.balanceOf(account) == 0 ) &&    // account has zero balance so it will increase currentTotalInvestors
 			( allowedInvestors != 0 ) &&    // max number of token holder restriction is in place 
 			( currentTotalInvestors + 1 ) > allowedInvestors ) // make sure minting to account with 0 balance do not exceed allowedInvestors
@@ -174,7 +174,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 		}
 
 		// minting will sure increase currentTotalInvestors if address balance is 0
-		if( ERC20.balanceOf(account) == 0 && account != owner() ) {
+		if( ERC20.balanceOf(account) == 0 && account != Ownable.owner() ) {
 			currentTotalInvestors = currentTotalInvestors + 1;
 		}
 
@@ -194,7 +194,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 		 ERC20._burn(account, amount);
 
 		// burning will decrease currentTotalInvestors if address balance becomes 0
-		if( ERC20.balanceOf(account) == 0 && account != owner() ) {
+		if( ERC20.balanceOf(account) == 0 && account != Ownable.owner() ) {
 			currentTotalInvestors = currentTotalInvestors - 1;
 		}
 
@@ -530,13 +530,13 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	internal {
 
 		// Transfer will surely increase currentTotalInvestors if recipient current balance is 0
-		if( ERC20.balanceOf(recipient) == 0 && recipient != owner() ) {
+		if( ERC20.balanceOf(recipient) == 0 && recipient != Ownable.owner() ) {
 			currentTotalInvestors = currentTotalInvestors + 1;
 		}
 
 		ERC20._transfer(sender, recipient, amount);
 
-		if( ERC20.balanceOf(sender) == 0 && sender != owner() ) {
+		if( ERC20.balanceOf(sender) == 0 && sender != Ownable.owner() ) {
 			currentTotalInvestors = currentTotalInvestors - 1;		
 		}
 
