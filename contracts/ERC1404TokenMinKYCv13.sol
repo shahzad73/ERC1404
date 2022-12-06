@@ -49,8 +49,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	uint64 public currentTotalInvestors = 0;		
 	uint64 public allowedInvestors = 0;
 
-	// Holding period and decimal places	
-	// tradingHoldingPeriod is EpochTime, if set in future then it will stop 
+	// Holding period in EpochTime, if set in future then it will stop 
 	// all transfers between investors
 	uint64 public tradingHoldingPeriod = 1;
 
@@ -116,7 +115,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 
 
 	// ------------------------------------------------------------------------
-	// Modifiers of this contract 
+	// Modifiers for this contract 
 	// ------------------------------------------------------------------------
     modifier onlyWhitelistControlAuthority () {
 
@@ -160,16 +159,22 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
     {
 		require ( _receiveRestriction[account] != 0, "Address is not yet whitelisted by issuer" );
 		require ( amount != 0, "Zero amount cannot be minted" );
+		
+		// This is special case while minting tokens. if issuer is trying to mint to a address while max token holder restriction
+		// is in place and token already has max holders then this condition will revert this transaction as this will result in
+		// currentTotalInvestors getting larger than allowedInvestors. The issuer account is exempted from this condition as
+		// issuer account is not counted in currentTotalInvestors
 		if( 
-			( balanceOf(account) == 0 ) && 
-			( allowedInvestors != 0 ) && 
-			( currentTotalInvestors + 1 ) > allowedInvestors ) 
+			( account != owner() ) &&       // issuer account is exempted from this condition
+			( ERC20.balanceOf(account) == 0 ) &&    // account has zero balance so it will increase currentTotalInvestors
+			( allowedInvestors != 0 ) &&    // max number of token holder restriction is in place 
+			( currentTotalInvestors + 1 ) > allowedInvestors ) // make sure minting to account with 0 balance do not exceed allowedInvestors
 		{
 			revert ("Minting not allowed to this address as allowed token holder restriction is in place and minting will increase the allowed limit");
 		}
 
 		// minting will sure increase currentTotalInvestors if address balance is 0
-		if( balanceOf(account) == 0 && account != owner() ) {
+		if( ERC20.balanceOf(account) == 0 && account != owner() ) {
 			currentTotalInvestors = currentTotalInvestors + 1;
 		}
 
@@ -189,7 +194,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 		 ERC20._burn(account, amount);
 
 		// burning will decrease currentTotalInvestors if address balance becomes 0
-		if( balanceOf(account) == 0 && account != owner() ) {
+		if( ERC20.balanceOf(account) == 0 && account != owner() ) {
 			currentTotalInvestors = currentTotalInvestors - 1;
 		}
 
@@ -238,11 +243,11 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
     }
 
 
-	// ------------------------------------------------------------------------
-	// Number of addresses who can hold non-zero balance and holding period management
-	// ------------------------------------------------------------------------
+	// --------------------------------------------------------------------------------------
+	// Manage number of addresses who can hold non-zero balance and holding period management
+	// --------------------------------------------------------------------------------------
 	// _allowedInvestors = 0    No limit on number of investors (or number of addresses with non-zero balance)         
-	// _allowedInvestors > 0 only X number of addresses can have non zero balance 
+	// _allowedInvestors > 0    only X number of addresses can have non zero balance 
     function resetAllowedInvestors(
 		uint64 _allowedInvestors
 	) 
@@ -312,7 +317,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	
 
 
-  	// Set Receive and Send restrictions on investors 
+  	// Set Receive and Send restrictions on addresses. Both values are EPOCH time
 	function modifyKYCData (
 		address account, 
 		uint64 receiveRestriction, 
@@ -414,9 +419,11 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 			} else {
 				if( ERC20.balanceOf(_to) > 0 || _to == Ownable.owner()) {
 					// token can be transferred if the receiver already holding tokens and already counted in currentTotalInvestors
-					// or receiver is issuer account. issuer account do not count in currentTotalInvestors
+					// or receiver is issuer account. issuer/owner account do not count in currentTotalInvestors
 					return NO_TRANSFER_RESTRICTION_FOUND;
 				} else {
+					// if To address has zero balance then check this transfer do not exceed allowedInvestors as 
+					// this transfer will surely increase currentTotalInvestors
 					if(  currentTotalInvestors < allowedInvestors  ) {
 						// currentTotalInvestors is within limits of allowedInvestors
 						return NO_TRANSFER_RESTRICTION_FOUND;
@@ -522,6 +529,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	) 
 	internal {
 
+		// Transfer will surely increase currentTotalInvestors if recipient current balance is 0
 		if( ERC20.balanceOf(recipient) == 0 && recipient != owner() ) {
 			currentTotalInvestors = currentTotalInvestors + 1;
 		}
