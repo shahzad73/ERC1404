@@ -46,8 +46,9 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	// These variables control how many investors can have non-zero token balance
 	// if allowedInvestors = 0 then there is no limit of number of investors who can 
 	// hold non-zero balance
+	uint8 private constant ANY_NUMBER_OF_TOKEN_HOLDERS_ALLOWED = 0; 
 	uint64 public currentTotalInvestors = 0;		
-	uint64 public allowedInvestors = 0;
+	uint64 public allowedInvestors;
 
 	// Holding period in EpochTime, if set in future then it will stop 
 	// all transfers between investors
@@ -167,7 +168,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 		if( 
 			( account != Ownable.owner() ) &&       // issuer account is exempted from this condition
 			( ERC20.balanceOf(account) == 0 ) &&    // account has zero balance so it will increase currentTotalInvestors
-			( allowedInvestors != 0 ) &&    // max number of token holder restriction is in place 
+			( allowedInvestors != ANY_NUMBER_OF_TOKEN_HOLDERS_ALLOWED ) &&    // max number of token holder restriction is in place 
 			( currentTotalInvestors + 1 ) > allowedInvestors ) // make sure minting to account with 0 balance do not exceed allowedInvestors
 		{
 			revert ("Minting not allowed to this address as allowed token holder restriction is in place and minting will increase the allowed limit");
@@ -254,7 +255,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	external 
 	Ownable.onlyOwner {
 
-		if( _allowedInvestors != 0 && _allowedInvestors < currentTotalInvestors ) {
+		if( _allowedInvestors != ANY_NUMBER_OF_TOKEN_HOLDERS_ALLOWED && _allowedInvestors < currentTotalInvestors ) {
 			revert( "Allowed Token holders cannot be less than current token holders with non-zero balance");
 		}
 
@@ -414,7 +415,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 
 			// Following conditions make sure if number of token holders are within limit if enabled
 			// allowedInvestors = 0 means no restriction on number of token holders and is the default setting
-			if(allowedInvestors == 0) {
+			if(allowedInvestors == ANY_NUMBER_OF_TOKEN_HOLDERS_ALLOWED) {
 				return NO_TRANSFER_RESTRICTION_FOUND;
 			} else {
 				if( ERC20.balanceOf(_to) > 0 || _to == Ownable.owner()) {
