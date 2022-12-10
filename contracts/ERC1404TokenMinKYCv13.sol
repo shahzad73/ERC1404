@@ -479,7 +479,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	notRestricted (_msgSender(), recipient, amount)
 	returns (bool) {
 
-		transferSharesBetweenInvestors ( _msgSender(), recipient, amount );
+		transferSharesBetweenInvestors ( _msgSender(), recipient, amount, true );
 		return true;
 
     }
@@ -496,7 +496,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	notRestricted (sender, recipient, amount)
 	returns (bool)	{	
 
-		transferSharesBetweenInvestors ( sender, recipient, amount );
+		transferSharesBetweenInvestors ( sender, recipient, amount, false );
 		emit TransferFrom( _msgSender(), sender, recipient, amount );
 		return true;
 
@@ -513,7 +513,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	external 
 	returns (bool)  {
 		
-		transferSharesBetweenInvestors ( from, Ownable.owner(), amount );
+		transferSharesBetweenInvestors ( from, Ownable.owner(), amount, true );
 		emit IssuerForceTransfer (from, Ownable.owner(), amount);
 		return true;
 
@@ -526,7 +526,8 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	function transferSharesBetweenInvestors (
         address sender,
         address recipient,
-        uint256 amount	
+        uint256 amount,
+		bool simpleTransfer	   // true = transfer,   false = transferFrom
 	) 
 	internal {
 
@@ -535,7 +536,11 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 			currentTotalInvestors = currentTotalInvestors + 1;
 		}
 
-		ERC20._transfer(sender, recipient, amount);
+		if( simpleTransfer == true ) {
+			ERC20._transfer(sender, recipient, amount);
+		} else {
+			ERC20.transferFrom(sender, recipient, amount);
+		}
 
 		if( ERC20.balanceOf(sender) == 0 && sender != Ownable.owner() ) {
 			currentTotalInvestors = currentTotalInvestors - 1;		
