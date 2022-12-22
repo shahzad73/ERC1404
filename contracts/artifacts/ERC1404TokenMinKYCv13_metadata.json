@@ -1155,11 +1155,11 @@
 			]
 		},
 		"contracts/ERC1404TokenMinKYCv13.sol": {
-			"keccak256": "0x6c58e96d17367b98a407297e0a55eaa5a5ba2de464474089df8cfdca7f45349c",
+			"keccak256": "0x85257e807d3affc1669a71d69637a8b14967d341ca3745afd68485ffe3699ab1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c541f7ba983a3f3c77d63e94d8e94a52c22d86fe37c1a87131cbc0f75b6f689e",
-				"dweb:/ipfs/QmZMXCmd87gtDugmjmXYpmiWwW334oGkXk6cSK21Nropja"
+				"bzz-raw://2a7446cfc55650977ee0b87388d5ce288d0830fdd4a835e48589dc74535fb3e0",
+				"dweb:/ipfs/QmcPhGN2iDQD4baHb52TCVqaGkghLzackSEqJXwWh2xphV"
 			]
 		},
 		"contracts/IERC1404.sol": {

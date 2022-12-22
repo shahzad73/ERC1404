@@ -35,9 +35,9 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	event IssuerForceTransfer (address indexed from, address indexed to, uint256 amount);
 
 
-	string public version = "1.3";
-	string public IssuancePlatform = "DigiShares";
-	string public issuanceProtocol = "ERC-1404";
+	string public constant version = "1.3";
+	string public constant IssuancePlatform = "DigiShares";
+	string public constant issuanceProtocol = "ERC-1404";
 	string public ShareCertificate;
 	string public CompanyHomepage;
 	string public CompanyLegalDocs;
@@ -54,7 +54,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	// all transfers between investors
 	uint64 public tradingHoldingPeriod = 1;
 
-	uint8 private _decimals = 18;	
+	uint8 private immutable _decimals;	
 
 
 	// Transfer Restriction Codes and corresponding error message in _messageForTransferRestriction
@@ -90,26 +90,28 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 		string memory _CompanyLegalDocs, 
 		address _atomicSwapContractAddress 
 	) ERC20(_name, _symbol)  {
-		
+
+			address tmpSenderAddress = msg.sender;
+
 			_decimals = _decimalsPlaces;
 
 			// These variables set EPOCH time    1 = 1 January 1970
-			_receiveRestriction[Ownable.owner()] = 1;
-			_sendRestriction[Ownable.owner()] = 1;
+			_receiveRestriction[tmpSenderAddress] = 1;
+			_sendRestriction[tmpSenderAddress] = 1;
 			_receiveRestriction[_atomicSwapContractAddress] = 1;
 			_sendRestriction[_atomicSwapContractAddress] = 1;
 
 			allowedInvestors = _allowedInvestors;
 
 			// add message sender to whitelist authority list
-			_whitelistControlAuthority[Ownable.owner()] = true;
+			_whitelistControlAuthority[tmpSenderAddress] = true;
 
 			ShareCertificate = _ShareCertificate;
 			CompanyHomepage = _CompanyHomepage;
 			CompanyLegalDocs = _CompanyLegalDocs;
 
-			_mint(Ownable.owner() , _initialSupply);
-			emit MintTokens(Ownable.owner(), _initialSupply);
+			_mint(tmpSenderAddress , _initialSupply);
+			emit MintTokens(tmpSenderAddress, _initialSupply);
 	}
 	
 
@@ -120,7 +122,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	// ------------------------------------------------------------------------
     modifier onlyWhitelistControlAuthority () {
 
-	  	require(_whitelistControlAuthority[_msgSender()] == true, "Only authorized addresses can control whitelisting of holder addresses");
+	  	require(_whitelistControlAuthority[msg.sender] == true, "Only authorized addresses can control whitelisting of holder addresses");
         _;
 
     }
@@ -158,6 +160,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	Ownable.onlyOwner
     returns (bool)
     {
+		require ( account != address(0), "Minting address cannot be zero");
 		require ( _receiveRestriction[account] != 0, "Address is not yet whitelisted by issuer" );
 		require ( amount != 0, "Zero amount cannot be minted" );
 		
@@ -190,9 +193,10 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	Ownable.onlyOwner
     returns (bool)
     {
-		 require ( amount != 0, "Zero amount cannot be burned" );		
+		require( account != address(0), "Burn address cannot be zero");
+		require ( amount != 0, "Zero amount cannot be burned" );		
 
-		 ERC20._burn(account, amount);
+		ERC20._burn(account, amount);
 
 		// burning will decrease currentTotalInvestors if address balance becomes 0
 		if( ERC20.balanceOf(account) == 0 && account != Ownable.owner() ) {
@@ -393,7 +397,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 			 	return TRANSFERS_DISABLED;   
 			}
 
-		  	if( value <= 0) {
+		  	if( value < 1) {
 		  	  	return TRANSFER_VALUE_CANNOT_ZERO;   
 			}
 
@@ -476,10 +480,10 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
     ) 	
 	override
 	public 
-	notRestricted (_msgSender(), recipient, amount)
+	notRestricted (msg.sender, recipient, amount)
 	returns (bool) {
 
-		transferSharesBetweenInvestors ( _msgSender(), recipient, amount, true );
+		transferSharesBetweenInvestors ( msg.sender, recipient, amount, true );
 		return true;
 
     }
@@ -497,7 +501,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	returns (bool)	{	
 
 		transferSharesBetweenInvestors ( sender, recipient, amount, false );
-		emit TransferFrom( _msgSender(), sender, recipient, amount );
+		emit TransferFrom( msg.sender, sender, recipient, amount );
 		return true;
 
     }
