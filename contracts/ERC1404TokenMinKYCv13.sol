@@ -162,10 +162,10 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
     {
 		require ( account != address(0), "Minting address cannot be zero");
 		require ( _receiveRestriction[account] != 0, "Address is not yet whitelisted by issuer" );
-		require ( amount != 0, "Zero amount cannot be minted" );
+		require ( amount > 0, "Zero amount cannot be minted" );
 		
 		// This is special case while minting tokens. if issuer is trying to mint to a address while max token holder restriction
-		// is in place and token already has max holders then this condition will revert this transaction as this will result in
+		// is in place and smart contract already has max tpken holders then this will revert this transaction as it will result in
 		// currentTotalInvestors getting larger than allowedInvestors. The issuer account is exempted from this condition as
 		// issuer account is not counted in currentTotalInvestors
 		if( 
@@ -194,7 +194,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
     returns (bool)
     {
 		require( account != address(0), "Burn address cannot be zero");
-		require ( amount != 0, "Zero amount cannot be burned" );		
+		require ( amount > 0, "Zero amount cannot be burned" );		
 
 		ERC20._burn(account, amount);
 
@@ -215,7 +215,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	// Token Links and Document information management 
 	// ------------------------------------------------------------------------
     function resetShareCertificate(
-		string memory _ShareCertificate
+		string calldata _ShareCertificate
 	) 
 	external 
 	Ownable.onlyOwner {
@@ -226,7 +226,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
     }
 
     function resetCompanyHomepage(
-		string memory _CompanyHomepage
+		string calldata _CompanyHomepage
 	) 
 	external 
 	Ownable.onlyOwner {
@@ -237,7 +237,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
     }
 	
     function resetCompanyLegalDocs(
-		string memory _CompanyLegalDocs
+		string calldata _CompanyLegalDocs
 	) 
 	external 
 	Ownable.onlyOwner {
@@ -335,7 +335,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 
 
 	function bulkWhitelistWallets (
-		address[] memory account, 
+		address[] calldata account, 
 		uint64 receiveRestriction, 
 		uint64 sendRestriction 
 	) 
@@ -417,7 +417,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 				return RECEIVER_UNDER_HOLDING_PERIOD;	// Receiver is whitelisted but is not yet eligible to receive tokens in his wallet (KYC time restriction)
 			}
 
-			// Following conditions make sure if number of token holders are within limit if enabled
+			// Following conditions make sure number of token holders will stay within limit if max token holder restriction is in place
 			// allowedInvestors = 0 means no restriction on number of token holders and is the default setting
 			if(allowedInvestors == ANY_NUMBER_OF_TOKEN_HOLDERS_ALLOWED) {
 				return NO_TRANSFER_RESTRICTION_FOUND;
@@ -526,7 +526,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 
 
 	// Transfer tokens from one account to other
-	// Also manage current number of account holders
+	// Also manage current number of token holders
 	function transferSharesBetweenInvestors (
         address sender,
         address recipient,
