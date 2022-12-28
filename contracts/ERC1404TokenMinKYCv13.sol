@@ -12,8 +12,8 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	// Set receive and send restrictions on investors
 	// date is Linux Epoch datetime
 	// Default values is 0 which means investor is not whitelisted
-    mapping (address => uint64) private _receiveRestriction;  
-	mapping (address => uint64) private _sendRestriction;
+    mapping (address => uint256) private _receiveRestriction;  
+	mapping (address => uint256) private _sendRestriction;
 
 	// These addresses act as whitelist authority and can call modifyKYCData
 	// There is possibility that issuer may let third party like Exchange to control 
@@ -27,8 +27,8 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
     event ShareCertificateReset (string _ShareCertificate);
     event CompanyHomepageReset (string _CompanyHomepage);
     event CompanyLegalDocsReset (string _CompanyLegalDocs);
-	event AllowedInvestorsReset(uint256 _allowedInvestors);
-	event HoldingPeriodReset(uint256 _tradingHoldingPeriod);
+	event AllowedInvestorsReset(uint64 _allowedInvestors);
+	event HoldingPeriodReset(uint64 _tradingHoldingPeriod);
 	event WhitelistAuthorityStatusSet(address user);
 	event WhitelistAuthorityStatusRemoved(address user);
 	event TransferFrom( address indexed spender, address indexed sender, address indexed recipient, uint256 amount );
@@ -47,14 +47,13 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	// if allowedInvestors = 0 then there is no limit of number of investors who can 
 	// hold non-zero balance
 	uint8 private constant ANY_NUMBER_OF_TOKEN_HOLDERS_ALLOWED = 0; 
+	uint8 private immutable _decimals;	
 	uint64 public currentTotalInvestors = 0;		
 	uint64 public allowedInvestors;
 
 	// Holding period in EpochTime, if set in future then it will stop 
 	// all transfers between investors
 	uint64 public tradingHoldingPeriod = 1;
-
-	uint8 private immutable _decimals;	
 
 
 	// Transfer Restriction Codes and corresponding error message in _messageForTransferRestriction
@@ -325,8 +324,8 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
   	// Set Receive and Send restrictions on addresses. Both values are EPOCH time
 	function modifyKYCData (
 		address account, 
-		uint64 receiveRestriction, 
-		uint64 sendRestriction 
+		uint256 receiveRestriction, 
+		uint256 sendRestriction 
 	) 
 	external 
 	onlyWhitelistControlAuthority { 
@@ -336,8 +335,8 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 
 	function bulkWhitelistWallets (
 		address[] calldata account, 
-		uint64 receiveRestriction, 
-		uint64 sendRestriction 
+		uint256 receiveRestriction, 
+		uint256 sendRestriction 
 	) 
 	external 
 	onlyWhitelistControlAuthority { 
@@ -355,8 +354,8 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 
 	function setupKYCDataForUser (
 		address account, 
-		uint64 receiveRestriction, 
-		uint64 sendRestriction
+		uint256 receiveRestriction, 
+		uint256 sendRestriction
 	) internal {	
 
 		_receiveRestriction[account] = receiveRestriction;

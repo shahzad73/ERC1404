@@ -506,14 +506,14 @@
 						"type": "address[]"
 					},
 					{
-						"internalType": "uint64",
+						"internalType": "uint256",
 						"name": "receiveRestriction",
-						"type": "uint64"
+						"type": "uint256"
 					},
 					{
-						"internalType": "uint64",
+						"internalType": "uint256",
 						"name": "sendRestriction",
-						"type": "uint64"
+						"type": "uint256"
 					}
 				],
 				"name": "bulkWhitelistWallets",
@@ -779,14 +779,14 @@
 						"type": "address"
 					},
 					{
-						"internalType": "uint64",
+						"internalType": "uint256",
 						"name": "receiveRestriction",
-						"type": "uint64"
+						"type": "uint256"
 					},
 					{
-						"internalType": "uint64",
+						"internalType": "uint256",
 						"name": "sendRestriction",
-						"type": "uint64"
+						"type": "uint256"
 					}
 				],
 				"name": "modifyKYCData",
@@ -1155,11 +1155,11 @@
 			]
 		},
 		"contracts/ERC1404TokenMinKYCv13.sol": {
-			"keccak256": "0x85257e807d3affc1669a71d69637a8b14967d341ca3745afd68485ffe3699ab1",
+			"keccak256": "0x07d82b85207e278ae81c19ccae6bb2e12c986335ff9bdaee85710e1e65f9f828",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://2a7446cfc55650977ee0b87388d5ce288d0830fdd4a835e48589dc74535fb3e0",
-				"dweb:/ipfs/QmcPhGN2iDQD4baHb52TCVqaGkghLzackSEqJXwWh2xphV"
+				"bzz-raw://93923ddd8cc0223b348ebc084b45c5416e50fec888e47c7de664c913fac8be93",
+				"dweb:/ipfs/QmPERVniVX7VesrbajWhphvUCReKJSrDRtgGsdMbWZQveP"
 			]
 		},
 		"contracts/IERC1404.sol": {
