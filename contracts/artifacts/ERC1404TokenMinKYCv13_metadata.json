@@ -61,9 +61,9 @@
 				"inputs": [
 					{
 						"indexed": false,
-						"internalType": "uint256",
+						"internalType": "uint64",
 						"name": "_allowedInvestors",
-						"type": "uint256"
+						"type": "uint64"
 					}
 				],
 				"name": "AllowedInvestorsReset",
@@ -144,9 +144,9 @@
 				"inputs": [
 					{
 						"indexed": false,
-						"internalType": "uint256",
+						"internalType": "uint64",
 						"name": "_tradingHoldingPeriod",
-						"type": "uint256"
+						"type": "uint64"
 					}
 				],
 				"name": "HoldingPeriodReset",
@@ -1155,11 +1155,11 @@
 			]
 		},
 		"contracts/ERC1404TokenMinKYCv13.sol": {
-			"keccak256": "0x07d82b85207e278ae81c19ccae6bb2e12c986335ff9bdaee85710e1e65f9f828",
+			"keccak256": "0x78f5791832d2fa8f032b9946dc8a203ac04c27d6825daf7c24ea53686b9e87ec",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://93923ddd8cc0223b348ebc084b45c5416e50fec888e47c7de664c913fac8be93",
-				"dweb:/ipfs/QmPERVniVX7VesrbajWhphvUCReKJSrDRtgGsdMbWZQveP"
+				"bzz-raw://976e4d01d6dc18841c9caa16b4e1d0e29c980c347ffdaccacf5a3a130b89d109",
+				"dweb:/ipfs/Qmda3ULJr9hKKn8RyFzfDcttt3RHMZz5pmS9gBNZB78iyw"
 			]
 		},
 		"contracts/IERC1404.sol": {
