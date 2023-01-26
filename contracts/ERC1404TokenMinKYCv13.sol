@@ -87,12 +87,14 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 		string memory _ShareCertificate, 
 		string memory _CompanyHomepage, 
 		string memory _CompanyLegalDocs, 
-		address _atomicSwapContractAddress 
+		address _atomicSwapContractAddress,
+		uint64  _tradingHoldingPeriod
 	) ERC20(_name, _symbol)  {
 
 			address tmpSenderAddress = msg.sender;
 
 			_decimals = _decimalsPlaces;
+			tradingHoldingPeriod = _tradingHoldingPeriod;
 
 			// These variables set EPOCH time    1 = 1 January 1970
 			_receiveRestriction[tmpSenderAddress] = 1;
