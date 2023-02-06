@@ -8,9 +8,9 @@ import "./IERC1404.sol";
 
 contract ERC20Token is ERC20, Ownable {
 
-	constructor(address _tokenToMintAddress, uint256 _initialSupply, string memory _name ) ERC20(_name, _name) {
+	constructor(uint256 _initialSupply, string memory _name ) ERC20(_name, _name) {
 
-			_mint(_tokenToMintAddress , _initialSupply);
+			_mint(msg.sender , _initialSupply);
 
 	}
 

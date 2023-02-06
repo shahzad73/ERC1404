@@ -10,7 +10,7 @@ module.exports = function (deployer) {
 	 //var _name = "E1404"
 	 //deployer.deploy(ERC1404, _tokenToMintAddress, _initialSupply, _name);
 	
-	 _name = "USDC"
+	 _name = "USDCtest"
 	 deployer.deploy(ERC20, _tokenToMintAddress, _initialSupply, _name);	
 
 	 //deployer.deploy(Swaper);	

@@ -34,7 +34,6 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 	event TransferFrom( address indexed spender, address indexed sender, address indexed recipient, uint256 amount );
 	event IssuerForceTransfer (address indexed from, address indexed to, uint256 amount);
 
-
 	string public constant version = "1.3";
 	string public constant IssuancePlatform = "DigiShares";
 	string public constant issuanceProtocol = "ERC-1404";
@@ -556,3 +555,31 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 
 
 }
+
+
+/*
+
+	Version 1.1
+
+	1. Forceful take over of token   ( forceTransferToken )
+
+	2. Bulk whitelisting  ( bulkWhitelistWallets )
+
+
+	Version 1.2
+
+	1. Dedicated transfer restriction codes defined in detectTransferRestriction and their descriptions in messageForTransferRestriction
+
+	2. Events for multiple activities being performed  
+
+	3. tradingHoldingPeriod - Holding period has been implemented. Admin can setup a future date and all investor transfers will be disabled 
+	till that date. Previous it was a boolean variable with true and false
+
+
+	Version 1.3
+
+	1. Integration with openzeppelin library
+	
+	2. detectTransferRestriction  restructure
+
+*/
