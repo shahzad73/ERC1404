@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.7+commit.e28d00a7"
+		"version": "0.8.19+commit.7dd6d404"
 	},
 	"language": "Solidity",
 	"output": {
@@ -51,6 +51,11 @@
 						"internalType": "address",
 						"name": "_atomicSwapContractAddress",
 						"type": "address"
+					},
+					{
+						"internalType": "uint64",
+						"name": "_tradingHoldingPeriod",
+						"type": "uint64"
 					}
 				],
 				"stateMutability": "nonpayable",
@@ -1038,6 +1043,14 @@
 			}
 		],
 		"devdoc": {
+			"events": {
+				"Approval(address,address,uint256)": {
+					"details": "Emitted when the allowance of a `spender` for an `owner` is set by a call to {approve}. `value` is the new allowance."
+				},
+				"Transfer(address,address,uint256)": {
+					"details": "Emitted when `value` tokens are moved from one account (`from`) to another (`to`). Note that `value` may be zero."
+				}
+			},
 			"kind": "dev",
 			"methods": {
 				"allowance(address,address)": {
@@ -1102,7 +1115,7 @@
 		"compilationTarget": {
 			"contracts/ERC1404TokenMinKYCv13.sol": "ERC1404TokenMinKYCv13"
 		},
-		"evmVersion": "london",
+		"evmVersion": "paris",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -1155,11 +1168,11 @@
 			]
 		},
 		"contracts/ERC1404TokenMinKYCv13.sol": {
-			"keccak256": "0x78f5791832d2fa8f032b9946dc8a203ac04c27d6825daf7c24ea53686b9e87ec",
+			"keccak256": "0x74b5689fd95fc8834558e96c317fedf73bc436213845bd82f5cc31af1bc5311e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://976e4d01d6dc18841c9caa16b4e1d0e29c980c347ffdaccacf5a3a130b89d109",
-				"dweb:/ipfs/Qmda3ULJr9hKKn8RyFzfDcttt3RHMZz5pmS9gBNZB78iyw"
+				"bzz-raw://b9f64e219f55bd4d00b3d29f0ad1c2716f4d71aff7fa200a9d1fa2aa7f6d404c",
+				"dweb:/ipfs/QmNaCkfTmebJnYysw4jq4sLyKGfkBphrbkc4MZ8mfhbBH3"
 			]
 		},
 		"contracts/IERC1404.sol": {

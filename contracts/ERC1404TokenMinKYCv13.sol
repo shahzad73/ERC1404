@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity 0.8.19;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -113,7 +113,7 @@ contract ERC1404TokenMinKYCv13 is ERC20, Ownable, IERC1404 {
 			_mint(tmpSenderAddress , _initialSupply);
 			emit MintTokens(tmpSenderAddress, _initialSupply);
 	}
-	
+
 
 
 
