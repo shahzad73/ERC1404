@@ -566,7 +566,6 @@ contract TokenSwapper {
         EXPIRED
     }
 
-
     struct Swap {
         address executor;
         address openingToken;
@@ -576,7 +575,6 @@ contract TokenSwapper {
         uint256 expiry;
         States status;
     }
-
 
     //swaps stored as allSwaps[swapOriginator][swapNumber]
     mapping(address => mapping(uint256 => Swap)) allSwaps;
@@ -653,7 +651,7 @@ contract TokenSwapper {
         }
 
         //fetch swap data
-        Swap memory swap = allSwaps[originator][swapNumber];
+        Swap storage swap = allSwaps[originator][swapNumber];
 
         if( swap.status != States.OPEN ) {
             revert ("TokenSwapper: swap not open");
@@ -691,8 +689,8 @@ contract TokenSwapper {
             revert("TokenSwapper: swapNumber does not exists");            
         }
 
-        //fetch swap data
-        Swap memory swap = allSwaps[originator][swapNumber];
+        // use storage instead of memory to save changes directly inside 
+        Swap storage swap = allSwaps[originator][swapNumber];
 
         if( swap.status != States.OPEN ) {
             revert("TokenSwapper: swap not open");
@@ -720,6 +718,8 @@ contract TokenSwapper {
         Swap memory swap = allSwaps[originator][swapNumber];
         return(swap, uint256(swap.status));
     }
+
+
 }
 
 
