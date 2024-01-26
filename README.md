@@ -18,4 +18,4 @@ only owner of this control can set another address true,  Addresses in this mapp
 
 6.  Minting and Burning     only owner of this contract can mint or burn new tokens
 
-The contract does not use libraries like OpenZeppelin to make sure that minimum code is used and deployment size of low to reduce the deployment cost 
+The contract use libraries like OpenZeppelin 
